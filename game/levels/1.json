@@ -1,0 +1,13 @@
+{
+    "obstacles": [
+      {"x": 100, "y": 100, "width": 50, "height": 50},
+      {"x": 200, "y": 200, "width": 60, "height": 60}
+    ],
+
+    "doors": [
+      {"x": 100, "y": 100, "width": 50, "height": 50},
+      {"x": 200, "y": 200, "width": 60, "height": 60} 
+
+    ]
+
+}
