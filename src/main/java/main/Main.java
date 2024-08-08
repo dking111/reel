@@ -1,7 +1,6 @@
 package main;
 
 import javax.swing.JFrame;
-import game.Interface;
 
 public class Main extends JFrame {
 
