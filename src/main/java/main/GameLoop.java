@@ -24,7 +24,7 @@ public class GameLoop extends JPanel implements ActionListener {
     private Player player;
     private GameData gameData;
     private int speed;
-    private Image background;
+    private Background background;
 
     public GameLoop() {
         // Set panel properties
@@ -35,9 +35,8 @@ public class GameLoop extends JPanel implements ActionListener {
         player = new Player(100, 100, 50, 50,gameData.getPlayer());
         logic = new Logic(player,gameData);
         camera = new Camera(logic,gameData,player);
-
-        ImageIcon icon = new ImageIcon(gameData.getBackground());
-        background = icon.getImage();
+        background = new Background(0, 0, gameData.getWidth(), gameData.getHeight(), gameData.getBackground());
+      
         
 
 
@@ -93,7 +92,7 @@ public class GameLoop extends JPanel implements ActionListener {
     }
 
     private void draw(Graphics g) {
-        g.drawImage(background, getX(), getY(), gameData.getWidth(), gameData.getHeight(), null);
+        background.draw(g);
         // Draw the player
         player.draw(g);
         for (Sprite sprite : gameData.getSprites()) {

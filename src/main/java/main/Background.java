@@ -4,16 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 
 
-public class Background extends Sprite {
+public class Background extends AnimatedSprite {
     private Image image;
     public Background(int x, int y, int w, int h, String path){
-        super(x, y, w, h);
-        ImageIcon icon = new ImageIcon(path);
-        image = icon.getImage();
+        super(x, y, w, h,path);
+        
     }
 
-    public void draw(Graphics g){
-        g.drawImage(image, getX(), getY(), getW(), getH(), null); 
-    }
+
     
 }
