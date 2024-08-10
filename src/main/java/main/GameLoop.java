@@ -7,8 +7,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+
+import javax.swing.*;
+import java.awt.*;
 
 
 public class GameLoop extends JPanel implements ActionListener {
@@ -19,6 +24,7 @@ public class GameLoop extends JPanel implements ActionListener {
     private Player player;
     private GameData gameData;
     private int speed;
+    private Image background;
 
     public GameLoop() {
         // Set panel properties
@@ -26,10 +32,13 @@ public class GameLoop extends JPanel implements ActionListener {
         setBackground(Color.BLACK);
         speed = 5;
         gameData = new GameData("src/main/resources/levels/1.json");
-        player = new Player(100, 100, 50, 50);
+        player = new Player(100, 100, 50, 50,gameData.getPlayer());
         logic = new Logic(player,gameData);
         camera = new Camera(logic,gameData,player);
 
+        ImageIcon icon = new ImageIcon(gameData.getBackground());
+        background = icon.getImage();
+        
 
 
 
@@ -84,6 +93,7 @@ public class GameLoop extends JPanel implements ActionListener {
     }
 
     private void draw(Graphics g) {
+        g.drawImage(background, getX(), getY(), gameData.getWidth(), gameData.getHeight(), null);
         // Draw the player
         player.draw(g);
         for (Sprite sprite : gameData.getSprites()) {
@@ -100,7 +110,7 @@ public class GameLoop extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         // Update game state
-    
+        
         // Move player based on current dx/dy values
         player.move(player.getDx(), player.getDy());
     

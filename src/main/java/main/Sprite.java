@@ -41,4 +41,10 @@ public class Sprite {
     public void setDx(int dx) { this.dx = dx; }
     public int getDy() { return dy; }
     public void setDy(int dy) { this.dy = dy; }
+
+
+
+
+
+
 }

@@ -11,6 +11,8 @@ public class GameData {
     private float cameraBounds;
     private int width;
     private int height;
+    private String background;
+    private String player;
 
     // Constructor that initializes game data from the given file path
     public GameData(String filepath) {
@@ -29,6 +31,8 @@ public class GameData {
             this.cameraBounds = data.cameraBounds;
             this.width = data.width;
             this.height = data.height;
+            this.player = data.player;
+            this.background = data.background;
         } catch (IOException e) {
             e.printStackTrace(); // Print error message
         }
@@ -51,5 +55,12 @@ public class GameData {
     }
     public int getWidth(){
         return width;
+    }
+    public String getPlayer(){
+        return player;
+    }
+
+    public String getBackground(){
+        return background;
     }
 }
