@@ -8,7 +8,9 @@ import com.google.gson.Gson;
 public class GameData {
     private List<Sprite> sprites;
     private List<Door> doors;
-    private List<Sprite> cameraBounds;
+    private float cameraBounds;
+    private int width;
+    private int height;
 
     // Constructor that initializes game data from the given file path
     public GameData(String filepath) {
@@ -25,6 +27,8 @@ public class GameData {
             this.sprites = data.sprites;
             this.doors = data.doors;
             this.cameraBounds = data.cameraBounds;
+            this.width = data.width;
+            this.height = data.height;
         } catch (IOException e) {
             e.printStackTrace(); // Print error message
         }
@@ -39,7 +43,13 @@ public class GameData {
         return doors; // Return doors
     }
 
-    public List<Sprite> getCameraBounds(){
+    public float getCameraBounds(){
         return cameraBounds;
+    }
+    public int getHeight(){
+        return height;
+    }
+    public int getWidth(){
+        return width;
     }
 }

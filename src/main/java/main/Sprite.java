@@ -5,7 +5,7 @@ import java.awt.Graphics;
 
 public class Sprite {
     protected int x, y, w, h; // Changed to protected
-
+    private int dx, dy ;
 
     // Constructor
     public Sprite(int x, int y, int w, int h) {
@@ -13,6 +13,8 @@ public class Sprite {
         this.y = y;
         this.w = w;
         this.h = h;
+        dx = 0;
+        dy = 0;
     }
 
     // Draw method to render the sprite
@@ -35,4 +37,8 @@ public class Sprite {
     public void setW(int w) { this.w = w; }
     public int getH() { return h; }
     public void setH(int h) { this.h = h; }
+        public int getDx() { return dx; }
+    public void setDx(int dx) { this.dx = dx; }
+    public int getDy() { return dy; }
+    public void setDy(int dy) { this.dy = dy; }
 }

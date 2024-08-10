@@ -12,7 +12,7 @@ public class Main extends JFrame {
         setLocationRelativeTo(null);
 
         // Add game panel
-        Interface gamePanel = new Interface();
+        GameLoop gamePanel = new GameLoop();
         add(gamePanel);
 
         setVisible(true);

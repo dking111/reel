@@ -4,38 +4,33 @@ import java.util.List;
 
 public class Logic {
     private Player player;
-    public GameData gameData;
+    private GameData gameData;
 
-    public Logic() {
+    public Logic(Player player, GameData gameData) {
         // Initialize the player
-        player = new Player(100, 100, 50, 50);
-        gameData = new GameData("src/main/resources/levels/1.json");
+        this.player = player;
+        this.gameData = gameData;
+        
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public GameData getGameData() {
-        return gameData;
-    }
 
     public void collisionDetection(Player player, List<Sprite> sprites) {
         for (Sprite sprite : sprites) {
             if (isColliding(player, sprite)) {
+                //could cause issues!!!
                 handleCollision(player, sprite,0);
             }
         }
     }
 
-    private boolean isColliding(Player player, Sprite sprite) {
+    public boolean isColliding(Player player, Sprite sprite) {
         return player.getX() < sprite.getX() + sprite.getW() &&
                player.getX() + player.getW() > sprite.getX() &&
                player.getY() < sprite.getY() + sprite.getH() &&
                player.getY() + player.getH() > sprite.getY();
     }
 
-    private void handleCollision(Player player, Sprite sprite,int clearance) {
+    private void  handleCollision(Player player, Sprite sprite,int clearance) {
         // Assuming you have player velocity or direction to handle precise collisions
         // Adjust player's position to avoid overlap
         int overlapX = Math.min(player.getX() + player.getW() - sprite.getX(), sprite.getX() + sprite.getW() - player.getX());
@@ -56,15 +51,5 @@ public class Logic {
         }
     }
 
-    public boolean cameraMove(){
-        boolean returnval;
-        for (Sprite bound : gameData.getCameraBounds()) {
-            if (isColliding(player, bound)) {
-                returnval = true;
-                handleCollision(player, bound,0);
-            }
-        }
-        returnval = false;
-        return returnval;
-    }
+
 }

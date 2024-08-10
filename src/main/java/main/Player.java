@@ -9,6 +9,7 @@ public class Player extends Sprite{
 
     public Player(int x, int y,int w, int h) {
         super(x, y, w, h);
+
     }
     
 
@@ -17,7 +18,6 @@ public class Player extends Sprite{
         g.setColor(Color.RED);
         g.fillRect(getX(), getY(), getW(), getH());;
     }
-
 
 
 }

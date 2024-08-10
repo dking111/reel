@@ -10,19 +10,26 @@ import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class Interface extends JPanel implements ActionListener {
+
+public class GameLoop extends JPanel implements ActionListener {
 
     private Timer timer;
     private Logic logic;
-    private int dx , dy;
+    private Camera camera;
+    private Player player;
+    private GameData gameData;
     private int speed;
 
-    public Interface() {
+    public GameLoop() {
         // Set panel properties
         setPreferredSize(new Dimension(800, 600));
         setBackground(Color.BLACK);
         speed = 5;
-        logic = new Logic();
+        gameData = new GameData("src/main/resources/levels/1.json");
+        player = new Player(100, 100, 50, 50);
+        logic = new Logic(player,gameData);
+        camera = new Camera(logic,gameData,player);
+
 
 
 
@@ -38,19 +45,19 @@ public class Interface extends JPanel implements ActionListener {
                 int key = e.getKeyCode();
 
                 if (key == KeyEvent.VK_LEFT) {
-                    dx = -speed;
+                    player.setDx(-speed);
                 }
         
                 if (key == KeyEvent.VK_RIGHT) {
-                    dx = speed;
+                    player.setDx(speed);
                 }
         
                 if (key == KeyEvent.VK_UP) {
-                    dy = -speed;
+                    player.setDy(-speed);
                 }
         
                 if (key == KeyEvent.VK_DOWN) {
-                    dy = speed;
+                    player.setDy(speed);
                 }
             
             }
@@ -60,11 +67,11 @@ public class Interface extends JPanel implements ActionListener {
                 int key = e.getKeyCode();
 
                 if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_RIGHT) {
-                    dx = 0;
+                    player.setDx(0);
                 }
         
                 if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) {
-                    dy = 0;
+                    player.setDy(0);
                 }
             }
         });
@@ -78,32 +85,40 @@ public class Interface extends JPanel implements ActionListener {
 
     private void draw(Graphics g) {
         // Draw the player
-        logic.getPlayer().draw(g);
-        for (Sprite sprite : logic.gameData.getSprites()) {
+        player.draw(g);
+        for (Sprite sprite : gameData.getSprites()) {
             sprite.draw(g);
         }
-        for (Door door : logic.gameData.getDoors()) {
+        for (Door door : gameData.getDoors()) {
             door.draw(g);
         }
 
-        for (Sprite sprite : logic.gameData.getCameraBounds()){
-            sprite.draw(g);
-        }
+
         
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         // Update game state
-        if (!logic.cameraMove()){
-            logic.getPlayer().move(dx,dy);
+    
+        // Move player based on current dx/dy values
+        player.move(player.getDx(), player.getDy());
+    
+        // Adjust the camera movement if the player reaches near the screen boundary
+        camera.cameraMove();
+    
+        // Apply camera movement to all sprites (parallax effect)
+        if (camera.getDx() != 0 || camera.getDy() != 0) {
+            for (Sprite sprite : gameData.getSprites()) {
+                sprite.move(camera.getDx(), camera.getDy());
+            }
         }
-        else{
-            for (Sprite sprite : logic.gameData.getSprites()){
-                sprite.move(-dx,-dy);
-            } 
-        }
-        logic.collisionDetection(logic.getPlayer(), logic.gameData.getSprites());
-        repaint(); // Redraw the screen
+    
+        // Check collisions with other sprites
+        logic.collisionDetection(player, gameData.getSprites());
+    
+        // Redraw the screen
+        repaint();
     }
+    
 }
