@@ -1,7 +1,7 @@
 package main;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 public class Sprite {
     protected int x, y, w, h; // Changed to protected
@@ -18,7 +18,7 @@ public class Sprite {
     }
 
     // Draw method to render the sprite
-    public void draw(Graphics g) {
+    public void draw(Graphics2D g) {
         g.setColor(Color.BLUE); // Set the color for the sprite
         g.fillRect(x, y, w, h); // Draw the sprite as a filled rectangle        
     }

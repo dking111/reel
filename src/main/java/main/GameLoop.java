@@ -1,8 +1,5 @@
 package main;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -117,10 +114,11 @@ public class GameLoop extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        draw(g);
+        Graphics2D g2d = (Graphics2D) g; // Cast Graphics to Graphics2D
+        draw(g2d);
     }
 
-    private void draw(Graphics g) {
+    private void draw(Graphics2D g) {
         background.draw(g);
         button.draw(g);
         // Draw the player

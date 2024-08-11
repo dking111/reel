@@ -1,7 +1,7 @@
 package main;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingUtilities;
@@ -28,7 +28,7 @@ public class Button extends Sprite {
     
 
     @Override
-    public void draw(Graphics g) {
+    public void draw(Graphics2D g) {
         if (isActive) {
             g.setColor(activeColor);
             //reset

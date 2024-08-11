@@ -1,7 +1,7 @@
 package main;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 public class Door extends Sprite {
     private String path;
@@ -17,7 +17,7 @@ public class Door extends Sprite {
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void draw(Graphics2D g) {
         g.setColor(Color.GREEN); // Set the color for the door
         g.fillRect(x, y, w, h);; // Draw the door as a filled rectangle using inherited fields
     }
