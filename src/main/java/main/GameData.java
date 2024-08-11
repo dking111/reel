@@ -21,7 +21,7 @@ public class GameData {
     }
 
     // Method to load game data from the JSON file
-    private void loadGameData(String filepath) {
+    public void loadGameData(String filepath) {
         Gson gson = new Gson();
         try (FileReader reader = new FileReader(filepath)) {
             // Deserialize JSON into GameData object (this)

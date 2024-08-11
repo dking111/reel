@@ -1,0 +1,22 @@
+{
+    "sprites": [
+      {"x": 150, "y": 250, "w": 50, "h": 50},
+      {"x": 550, "y": 250, "w": 50, "h": 50}
+
+    ],
+
+    "doors": [
+      {"x": 200, "y": 500, "w": 50, "h": 50,"path":"src\\main\\resources\\levels\\1.json"}
+
+    ],
+    "cameraBounds": 0.9,
+    "width":800,
+    "height":600,
+    "player":"src\\main\\resources\\assets\\player",
+    "background":"src\\main\\resources\\assets\\background_house"
+      
+
+
+    
+
+}

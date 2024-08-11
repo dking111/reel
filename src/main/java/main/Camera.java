@@ -52,4 +52,12 @@ public class Camera {
     public void setDx(int dx) { this.dx = dx; }
     public int getDy() { return dy; }
     public void setDy(int dy) { this.dy = dy; }
+
+    //to fix the pass by value issues
+    public void setPlayer(Player player){
+        this.player = player;
+    }
+    public void setLogic(Logic logic){
+        this.logic = logic;
+    }
 }

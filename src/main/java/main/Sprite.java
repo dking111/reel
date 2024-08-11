@@ -28,6 +28,9 @@ public class Sprite {
         setY(getY()+dy);
     }
 
+    public void collided(){
+        //empty method for polymorphism
+    }
     // Getters and setters (if needed)
     public int getX() { return x; }
     public void setX(int x) { this.x = x; }

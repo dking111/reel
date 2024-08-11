@@ -7,6 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -25,18 +28,22 @@ public class GameLoop extends JPanel implements ActionListener {
     private GameData gameData;
     private int speed;
     private Background background;
+    private Button button;
+    private int mouseX, mouseY;
 
     public GameLoop() {
         // Set panel properties
         setPreferredSize(new Dimension(800, 600));
         setBackground(Color.BLACK);
         speed = 5;
+        mouseX=0;
+        mouseY=0;
         gameData = new GameData("src/main/resources/levels/1.json");
         player = new Player(100, 100, 50, 50,gameData.getPlayer());
         logic = new Logic(player,gameData);
         camera = new Camera(logic,gameData,player);
         background = new Background(0, 0, gameData.getWidth(), gameData.getHeight(), gameData.getBackground());
-      
+        button = new Button(50,50,50,50,Color.RED,Color.MAGENTA,Color.ORANGE,logic);
         
 
 
@@ -46,6 +53,28 @@ public class GameLoop extends JPanel implements ActionListener {
         timer.start();
         setFocusable(true);
 
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                mouseX = e.getX();
+                mouseY = e.getY();
+
+            }
+
+        });
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e){
+
+                int clicked = e.getButton();
+                System.out.println(clicked);
+                if(clicked==1){
+                button.listener(mouseX, mouseY,true);
+            }
+            }
+            
+        });
         // Add key listener for player controls
         addKeyListener(new KeyAdapter() {
             @Override
@@ -93,6 +122,7 @@ public class GameLoop extends JPanel implements ActionListener {
 
     private void draw(Graphics g) {
         background.draw(g);
+        button.draw(g);
         // Draw the player
         player.draw(g);
         for (Sprite sprite : gameData.getSprites()) {
@@ -108,7 +138,20 @@ public class GameLoop extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        //check if level has changed
+        for(Door door : gameData.getDoors()){
+            String newPath = door.levelChanged();
+            if(newPath != null){
+                gameData.loadGameData(newPath);
+                player = new Player(player.getX(), player.getY(), player.getW(), player.getH(), gameData.getPlayer());
+                background = new Background(background.getX(), background.getY(), background.getW(), background.getH(), gameData.getBackground());
+                logic.setPlayer(player);
+                camera.setPlayer(player);
+                camera.setLogic(logic);
+            }
+        }
         // Update game state
+        button.listener(mouseX, mouseY, false);
         
         // Move player based on current dx/dy values
         player.move(player.getDx(), player.getDy());
@@ -118,13 +161,18 @@ public class GameLoop extends JPanel implements ActionListener {
     
         // Apply camera movement to all sprites (parallax effect)
         if (camera.getDx() != 0 || camera.getDy() != 0) {
+            background.move(camera.getDx(), camera.getDy());
             for (Sprite sprite : gameData.getSprites()) {
                 sprite.move(camera.getDx(), camera.getDy());
+            }
+            for (Door door: gameData.getDoors()){
+                door.move(camera.getDx(), camera.getDy());
             }
         }
     
         // Check collisions with other sprites
         logic.collisionDetection(player, gameData.getSprites());
+        logic.collisionDetection(player, gameData.getDoors());
     
         // Redraw the screen
         repaint();

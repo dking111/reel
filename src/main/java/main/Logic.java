@@ -14,11 +14,12 @@ public class Logic {
     }
 
 
-    public void collisionDetection(Player player, List<Sprite> sprites) {
+    public void collisionDetection(Player player, List<? extends Sprite> sprites) {
         for (Sprite sprite : sprites) {
             if (isColliding(player, sprite)) {
                 //could cause issues!!!
                 handleCollision(player, sprite,0);
+                sprite.collided();
             }
         }
     }
@@ -49,6 +50,9 @@ public class Logic {
                 player.setY(sprite.getY() + (sprite.getH()+clearance)); // Move player below the sprite
             }
         }
+    }
+    public void setPlayer(Player player){
+        this.player = player;
     }
 
 
