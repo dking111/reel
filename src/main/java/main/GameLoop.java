@@ -23,7 +23,7 @@ public class GameLoop extends JPanel implements ActionListener {
     private Camera camera;
     private Player player;
     private GameData gameData;
-    private int speed;
+    private int maxSpeed;
     private Background background;
     private Button button;
     private int mouseX, mouseY;
@@ -32,11 +32,11 @@ public class GameLoop extends JPanel implements ActionListener {
         // Set panel properties
         setPreferredSize(new Dimension(800, 600));
         setBackground(Color.BLACK);
-        speed = 5;
+        maxSpeed = 5;
         mouseX=0;
         mouseY=0;
         gameData = new GameData("src/main/resources/levels/1.json");
-        player = new Player(100, 100, 50, 50,gameData.getPlayer());
+        player = new Player(100, 100, 100, 100,gameData.getPlayer(),maxSpeed);
         logic = new Logic(player,gameData);
         camera = new Camera(logic,gameData,player);
         background = new Background(0, 0, gameData.getWidth(), gameData.getHeight(), gameData.getBackground());
@@ -79,19 +79,23 @@ public class GameLoop extends JPanel implements ActionListener {
                 int key = e.getKeyCode();
 
                 if (key == KeyEvent.VK_LEFT) {
-                    player.setDx(-speed);
+                    player.setDx(-player.getMaxSpeed());
+                    player.setDirection("left");
                 }
         
                 if (key == KeyEvent.VK_RIGHT) {
-                    player.setDx(speed);
+                    player.setDx(player.getMaxSpeed());
+                    player.setDirection("right");
                 }
         
                 if (key == KeyEvent.VK_UP) {
-                    player.setDy(-speed);
+                    player.setDy(-player.getMaxSpeed());
+                    player.setDirection("up");
                 }
         
                 if (key == KeyEvent.VK_DOWN) {
-                    player.setDy(speed);
+                    player.setDy(player.getMaxSpeed());
+                    player.setDirection("down");
                 }
             
             }
@@ -141,7 +145,7 @@ public class GameLoop extends JPanel implements ActionListener {
             String newPath = door.levelChanged();
             if(newPath != null){
                 gameData.loadGameData(newPath);
-                player = new Player(player.getX(), player.getY(), player.getW(), player.getH(), gameData.getPlayer());
+                player = new Player(player.getX(), player.getY(), player.getW(), player.getH(), gameData.getPlayer(),maxSpeed);
                 background = new Background(background.getX(), background.getY(), background.getW(), background.getH(), gameData.getBackground());
                 logic.setPlayer(player);
                 camera.setPlayer(player);

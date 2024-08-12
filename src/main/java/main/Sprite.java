@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 
 public class Sprite {
     protected int x, y, w, h; // Changed to protected
-    private int dx, dy ;
+    protected int dx, dy ;
 
     // Constructor
     public Sprite(int x, int y, int w, int h) {
