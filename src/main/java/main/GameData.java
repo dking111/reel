@@ -13,6 +13,7 @@ public class GameData {
     private int height;
     private String background;
     private String player;
+    private List<FishingSpot> fishingSpots;
 
     // Constructor that initializes game data from the given file path
     public GameData(String filepath) {
@@ -33,6 +34,7 @@ public class GameData {
             this.height = data.height;
             this.player = data.player;
             this.background = data.background;
+            this.fishingSpots = data.fishingSpots;
         } catch (IOException e) {
             e.printStackTrace(); // Print error message
         }
@@ -62,5 +64,9 @@ public class GameData {
 
     public String getBackground(){
         return background;
+    }
+
+    public List<FishingSpot> getFishingSpots(){
+        return fishingSpots;
     }
 }
