@@ -28,7 +28,7 @@ public class Main extends JFrame {
 //Graphics (initial) DONE
 //Animation (inital) DONE
 //Changing location (loading different levels) DONE
-//enhanced animation (changing state, forward, backward)
+//enhanced animation (changing state, forward, backward) DONE
 //Fishing controls
 //Game interface (GUI)
-//
+//Create an actual level

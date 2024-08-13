@@ -9,56 +9,27 @@ import java.util.List;
 import org.javatuples.Pair;
 
 public class Player extends AnimatedSprite {
-    private String direction;
+    private int angle;
     private int maxSpeed;
 
     public Player(int x, int y, int w, int h, String path,int maxSpeed) {
         super(x, y, w, h, path);
-        direction = "up";
+        angle = 0;
         this.maxSpeed = maxSpeed;
+        animationSpeed = 5;
+        
     }
 
     @Override
     public void draw(Graphics2D g) {
         // Save the original transformation
         AffineTransform originalTransform = g.getTransform();
-
-        if(dx==maxSpeed && dy== maxSpeed){
-            rotate(135, g);
-        }
-        else if(dx==maxSpeed && dy==-maxSpeed){
-            rotate(45, g);
-        }
-        else if(dx==-maxSpeed && dy==maxSpeed){
-            rotate(225, g);
-        }
-        else if(dx==-maxSpeed && dy==-maxSpeed){
-            rotate(315, g);
-        }
-        else if(dx==0 && dy==maxSpeed){
-            rotate(180, g);
-        }
-        else if(dx==0 &&dy==-maxSpeed){
-        }
-        else if (dx==maxSpeed && dy==0) {
-            rotate(90, g);   
-        }
-        else if(dx==-maxSpeed && dy==0){
-            rotate(270, g);
-        }
-
-
-        // Draw the image
-        g.drawImage(currentAnimation.get(currentFrame), getX(), getY(), getW(), getH(), null);
-
-        // Restore the original transformation
+        angle = calcAngle();
+        rotate(angle, g);
+        state = calcState();
+        super.draw(g);
+        //restore
         g.setTransform(originalTransform);
-
-        // Frame handling
-        if (frameCounter == 1) {
-            currentFrame = (currentFrame + 1) % currentAnimation.size();
-        }
-        frameCounter = (frameCounter + 1) % 60;
     }
 
     private Graphics2D rotate (int degree, Graphics2D g){
@@ -72,12 +43,46 @@ public class Player extends AnimatedSprite {
         return g;
     }
 
-    public void setDirection(String direction) {
-        this.direction = direction;
+  
+    private int calcAngle(){
+        int newAngle = angle;
+        if(dx==maxSpeed && dy== maxSpeed){
+            newAngle=135;
+        }
+        else if(dx==maxSpeed && dy==-maxSpeed){
+            newAngle = 45;
+        }
+        else if(dx==-maxSpeed && dy==maxSpeed){
+            newAngle=225;
+        }
+        else if(dx==-maxSpeed && dy==-maxSpeed){
+            newAngle=315;
+        }
+        else if(dx==0 && dy==maxSpeed){
+            newAngle=180;
+        }
+        else if(dx==0 &&dy==-maxSpeed){
+            newAngle=0;
+        }
+        else if (dx==maxSpeed && dy==0) {
+            newAngle = 90;
+        }
+        else if(dx==-maxSpeed && dy==0){
+            newAngle=270;
+        }
+        return newAngle;
     }
-    public String getDirection() {
-        return direction;
+
+    private String calcState(){
+        String newState = "idle";
+
+        if(dx!=0 || dy!=0){
+            newState="walk";
+        }
+
+        return newState;
     }
+
     public void setMaxSpeed(int maxSpeed){
         this.maxSpeed = maxSpeed;
     }

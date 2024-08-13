@@ -80,22 +80,18 @@ public class GameLoop extends JPanel implements ActionListener {
 
                 if (key == KeyEvent.VK_LEFT) {
                     player.setDx(-player.getMaxSpeed());
-                    player.setDirection("left");
                 }
         
                 if (key == KeyEvent.VK_RIGHT) {
                     player.setDx(player.getMaxSpeed());
-                    player.setDirection("right");
                 }
         
                 if (key == KeyEvent.VK_UP) {
                     player.setDy(-player.getMaxSpeed());
-                    player.setDirection("up");
                 }
         
                 if (key == KeyEvent.VK_DOWN) {
                     player.setDy(player.getMaxSpeed());
-                    player.setDirection("down");
                 }
             
             }
