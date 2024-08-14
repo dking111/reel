@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.util.List;
 import com.google.gson.Gson;
 
+/**
+ * Represents the game data, including game objects, dimensions, and configuration settings.
+ * The data is loaded from a JSON file and provides access to various game elements.
+ */
 public class GameData {
     private List<Sprite> sprites;
     private List<Door> doors;
@@ -15,17 +19,25 @@ public class GameData {
     private String player;
     private List<FishingSpot> fishingSpots;
 
-    // Constructor that initializes game data from the given file path
+    /**
+     * Constructs a GameData instance and initializes it by loading data from the specified JSON file.
+     *
+     * @param filepath The path to the JSON file containing the game data.
+     */
     public GameData(String filepath) {
-        // Load game data from the specified file path
         loadGameData(filepath);
     }
 
-    // Method to load game data from the JSON file
+    /**
+     * Loads game data from the specified JSON file.
+     * This method deserializes the JSON content into a GameData object.
+     *
+     * @param filepath The path to the JSON file containing the game data.
+     */
     public void loadGameData(String filepath) {
         Gson gson = new Gson();
         try (FileReader reader = new FileReader(filepath)) {
-            // Deserialize JSON into GameData object (this)
+            // Deserialize JSON into GameData object
             GameData data = gson.fromJson(reader, GameData.class);
             this.sprites = data.sprites;
             this.doors = data.doors;
@@ -40,33 +52,75 @@ public class GameData {
         }
     }
 
-    // Return the list of obstacles
+    /**
+     * Returns the list of sprites representing various obstacles and game objects.
+     *
+     * @return A list of {@link Sprite} objects.
+     */
     public List<Sprite> getSprites() {
-        return sprites; // Return obstacles
-    }
-    // Return the list of doors
-    public List<Door> getDoors() {
-        return doors; // Return doors
+        return sprites;
     }
 
-    public float getCameraBounds(){
+    /**
+     * Returns the list of doors in the game.
+     *
+     * @return A list of {@link Door} objects.
+     */
+    public List<Door> getDoors() {
+        return doors;
+    }
+
+    /**
+     * Returns the camera bounds as a float value.
+     *
+     * @return The camera bounds value.
+     */
+    public float getCameraBounds() {
         return cameraBounds;
     }
-    public int getHeight(){
+
+    /**
+     * Returns the height of the game world.
+     *
+     * @return The height of the game world in pixels.
+     */
+    public int getHeight() {
         return height;
     }
-    public int getWidth(){
+
+    /**
+     * Returns the width of the game world.
+     *
+     * @return The width of the game world in pixels.
+     */
+    public int getWidth() {
         return width;
     }
-    public String getPlayer(){
+
+    /**
+     * Returns the player information or identifier.
+     *
+     * @return The player information as a string.
+     */
+    public String getPlayer() {
         return player;
     }
 
-    public String getBackground(){
+    /**
+     * Returns the background image or resource path.
+     *
+     * @return The background resource path as a string.
+     */
+    public String getBackground() {
         return background;
     }
 
-    public List<FishingSpot> getFishingSpots(){
+    /**
+     * Returns the list of fishing spots in the game.
+     *
+     * @return A list of {@link FishingSpot} objects.
+     */
+    public List<FishingSpot> getFishingSpots() {
         return fishingSpots;
     }
 }

@@ -1,29 +1,73 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles the game's logic, including collision detection and response.
+ * It manages interactions between the player and other game objects.
+ */
 public class Logic {
     private Player player;
     private GameData gameData;
 
+    /**
+     * Initializes the game logic with the given player and game data.
+     * 
+     * @param player The player object to be managed.
+     * @param gameData The game data containing the game's state and objects.
+     */
     public Logic(Player player, GameData gameData) {
-        // Initialize the player
         this.player = player;
         this.gameData = gameData;
-        
     }
 
+    /**
+     * Checks for collisions between the player and a single sprite.
+     * 
+     * @param player The player object to check for collisions.
+     * @param sprite The sprite object to check for collisions with the player.
+     */
+    public void collisionDetection(Player player, Sprite sprite) {
+        List<Sprite> spriteList = new ArrayList<>();
+        spriteList.add(sprite);
+        collisionDetection(player, spriteList);
+    }
 
+    /**
+     * Checks for collisions between the player and a list of sprites.
+     * 
+     * @param player The player object to check for collisions.
+     * @param sprites The list of sprite objects to check for collisions with the player.
+     */
     public void collisionDetection(Player player, List<? extends Sprite> sprites) {
+        collisionDetection(player, sprites, 0);
+    }
+
+    /**
+     * Checks for collisions between the player and a list of sprites,
+     * with a specified clearance value to adjust collision handling.
+     * 
+     * @param player The player object to check for collisions.
+     * @param sprites The list of sprite objects to check for collisions with the player.
+     * @param clearance The clearance value to adjust collision handling.
+     */
+    public void collisionDetection(Player player, List<? extends Sprite> sprites, int clearance) {
         for (Sprite sprite : sprites) {
             if (isColliding(player, sprite)) {
-                //could cause issues!!!
-                handleCollision(player, sprite,0);
+                handleCollision(player, sprite, clearance);
                 sprite.collided();
             }
         }
     }
 
+    /**
+     * Determines if the player is colliding with a sprite.
+     * 
+     * @param player The player object to check for collisions.
+     * @param sprite The sprite object to check for collisions with the player.
+     * @return True if the player and sprite are colliding, otherwise false.
+     */
     public boolean isColliding(Player player, Sprite sprite) {
         return player.getX() < sprite.getX() + sprite.getW() &&
                player.getX() + player.getW() > sprite.getX() &&
@@ -31,29 +75,39 @@ public class Logic {
                player.getY() + player.getH() > sprite.getY();
     }
 
-    private void  handleCollision(Player player, Sprite sprite,int clearance) {
-        // Assuming you have player velocity or direction to handle precise collisions
-        // Adjust player's position to avoid overlap
+    /**
+     * Handles the collision response by adjusting the player's position
+     * to prevent overlap with the sprite, considering a clearance value.
+     * 
+     * @param player The player object involved in the collision.
+     * @param sprite The sprite object involved in the collision.
+     * @param clearance The clearance value to adjust collision handling.
+     */
+    private void handleCollision(Player player, Sprite sprite, int clearance) {
         int overlapX = Math.min(player.getX() + player.getW() - sprite.getX(), sprite.getX() + sprite.getW() - player.getX());
         int overlapY = Math.min(player.getY() + player.getH() - sprite.getY(), sprite.getY() + sprite.getH() - player.getY());
 
         if (overlapX < overlapY) {
             if (player.getX() < sprite.getX()) {
-                player.setX(sprite.getX() - (player.getW()+clearance)); // Move player to the left of the sprite
+                player.setX(sprite.getX() - (player.getW() + clearance)); // Move player to the left of the sprite
             } else {
-                player.setX(sprite.getX() + (sprite.getW()+clearance)); // Move player to the right of the sprite
+                player.setX(sprite.getX() + (sprite.getW() + clearance)); // Move player to the right of the sprite
             }
         } else {
             if (player.getY() < sprite.getY()) {
-                player.setY(sprite.getY() - (player.getH()+clearance)); // Move player above the sprite
+                player.setY(sprite.getY() - (player.getH() + clearance)); // Move player above the sprite
             } else {
-                player.setY(sprite.getY() + (sprite.getH()+clearance)); // Move player below the sprite
+                player.setY(sprite.getY() + (sprite.getH() + clearance)); // Move player below the sprite
             }
         }
     }
-    public void setPlayer(Player player){
+
+    /**
+     * Sets a new player object for the logic to manage.
+     * 
+     * @param player The new player object.
+     */
+    public void setPlayer(Player player) {
         this.player = player;
     }
-
-
 }
