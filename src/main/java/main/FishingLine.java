@@ -243,4 +243,8 @@ public class FishingLine extends Sprite {
         fishingLineFloat.setX(x);
         fishingLineFloat.setY(y);
     }
+
+    public int getMaxFishSpeed(){
+        return maxFishSpeed;
+    }
 }

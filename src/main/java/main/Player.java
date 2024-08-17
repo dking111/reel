@@ -27,10 +27,9 @@ public class Player extends AnimatedSprite {
      * @param maxSpeed  The maximum speed of the player.
      */
     public Player(int x, int y, int w, int h, String path, int maxSpeed) {
-        super(x, y, w, h, path);
+        super(x, y, w, h, path,5);
         angle = 0;
         this.maxSpeed = maxSpeed;
-        animationSpeed = 5;
     }
 
     /**
@@ -50,23 +49,7 @@ public class Player extends AnimatedSprite {
         g.setTransform(originalTransform);
     }
 
-    /**
-     * Rotates the {@code Graphics2D} context around the center of the image by the specified angle.
-     *
-     * @param degree The angle in degrees to rotate the graphics context.
-     * @param g      The {@code Graphics2D} context to rotate.
-     * @return The rotated {@code Graphics2D} context.
-     */
-    private Graphics2D rotate(int degree, Graphics2D g) {
-        // Calculate the center of the image
-        int centerX = getX() + getW() / 2;
-        int centerY = getY() + getH() / 2;
 
-        // Rotate the graphics context around the center of the image
-        g.rotate(Math.toRadians(degree), centerX, centerY);
-
-        return g;
-    }
 
     /**
      * Calculates the rotation angle of the player based on its current movement direction.

@@ -19,7 +19,7 @@ public class Background extends AnimatedSprite {
      * @param path The file path to the background image.
      */
     public Background(int x, int y, int w, int h, String path) {
-        super(x, y, w, h, path);
+        super(x, y, w, h, path,60);
         // Load the image using the path provided in the superclass constructor
     }
 }

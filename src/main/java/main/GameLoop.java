@@ -32,6 +32,8 @@ public class GameLoop extends JPanel implements ActionListener {
     private Boolean isFishing;
     private Boolean isCharging;
     private Boolean isCasting;
+    private Boolean isWaitingForFish;
+    private Fish fish;
     private Boolean isReeling;
     private Boolean isMouseHeld;
     private Boolean isLeftHeld;
@@ -39,6 +41,9 @@ public class GameLoop extends JPanel implements ActionListener {
     private ChargeMeter chargeMeter;
     private float chargePower;
     private FishingLine fishingLine;
+    private Water water;
+    private Boolean debug;
+    private Boolean god;
 
     /**
      * Initializes the game loop by setting up the panel properties, game data, player, camera,
@@ -52,7 +57,7 @@ public class GameLoop extends JPanel implements ActionListener {
         mouseX = 0;
         mouseY = 0;
         gameData = new GameData("src/main/resources/levels/1.json");
-        player = new Player(100, 100, 100, 100, gameData.getPlayer(), maxSpeed);
+        player = new Player(350, 400, 100, 100, gameData.getPlayer(), maxSpeed);
         logic = new Logic(player, gameData);
         camera = new Camera(logic, gameData, player);
         background = new Background(0, 0, gameData.getWidth(), gameData.getHeight(), gameData.getBackground());
@@ -60,10 +65,13 @@ public class GameLoop extends JPanel implements ActionListener {
         isFishing = false;
         isCharging = false;
         isCasting = false;
+        isWaitingForFish = false;
         isReeling = false;
         isMouseHeld = false;
         isLeftHeld = false;
         isRightHeld = false;
+        debug=false;
+        god=false;
 
         // Add mouse motion listener to track mouse position
         addMouseMotionListener(new MouseMotionAdapter() {
@@ -85,7 +93,7 @@ public class GameLoop extends JPanel implements ActionListener {
                 int clicked = e.getButton();
                 if (clicked == 1) {
                     button.listener(mouseX, mouseY, true);
-                    if (isFishing && !isCasting && !isReeling) {
+                    if (isFishing && !isCasting && !isReeling &&!isWaitingForFish) {
                         isCharging = true;
                         chargeMeter = new ChargeMeter(player.getX(), player.getY(), 50, 200, 5, 0.05f, 0.9f);
                     }
@@ -100,7 +108,7 @@ public class GameLoop extends JPanel implements ActionListener {
                 isMouseHeld = false;
                 int released = e.getButton();
 
-                if (isFishing && !isCasting && !isReeling && chargeMeter != null) {
+                if (isFishing && !isCasting && !isReeling&&!isWaitingForFish && chargeMeter != null) {
                     chargePower = chargeMeter.getAccuracy();
                     chargeMeter = null;
                     isCasting = true;
@@ -116,6 +124,14 @@ public class GameLoop extends JPanel implements ActionListener {
                 int key = e.getKeyCode();
                 if (isFishing == null) {
                     isFishing = false;
+                }
+                if (key == KeyEvent.VK_1){
+                    debug=!debug;
+                    System.out.println("debugging");
+                }
+                if (key == KeyEvent.VK_2){
+                    god=!god;
+                    System.out.println("god activated");
                 }
                 if (key == KeyEvent.VK_LEFT) {
                     isLeftHeld = true;
@@ -155,7 +171,7 @@ public class GameLoop extends JPanel implements ActionListener {
             @Override
             public void keyReleased(KeyEvent e) {
                 int key = e.getKeyCode();
-
+                
                 if (key == KeyEvent.VK_LEFT) {
                     isLeftHeld = false;
                     player.setDx(0);
@@ -201,20 +217,33 @@ public class GameLoop extends JPanel implements ActionListener {
             fishingLine.draw(g);
         }
         player.draw(g);
-        for (Sprite sprite : gameData.getSprites()) {
-            sprite.draw(g);
+
+
+
+
+        if (chargeMeter != null) {
+            chargeMeter.draw(g);
         }
+        if (fish!=null){
+            fish.draw(g);
+        }
+        if(debug){
+        if(gameData.getWater()!=null){
+            gameData.getWater().draw(g);
+
         for (Door door : gameData.getDoors()) {
             door.draw(g);
+        }
+        }
+        for (Sprite sprite : gameData.getSprites()) {
+            sprite.draw(g);
         }
         if (gameData.getFishingSpots() != null) {
             for (FishingSpot fishingSpot : gameData.getFishingSpots()) {
                 fishingSpot.draw(g);
             }
-            if (chargeMeter != null) {
-                chargeMeter.draw(g);
-            }
         }
+    }
     }
 
     /**
@@ -236,9 +265,30 @@ public class GameLoop extends JPanel implements ActionListener {
                 fishingLine = new FishingLine((player.getX() + player.getW() / 2), player.getY() - Math.round(chargePower * 100), 15, 15, (player.getX() + player.getW() / 2), (player.getY() + player.getH() / 2));
                 chargePower = 0;
                 isCasting = false;
-                isReeling = true;
+                isWaitingForFish = true;
             }
+            if (isWaitingForFish){
+                if (fish==null){
+                    fish = new Fish(350, 400,50,50,gameData.getFish(),fishingLine.getFishingLineFloat().getX(), fishingLine.getFishingLineFloat().getY(),gameData.getWater(),logic);
+                    fish.spawn();
+                }
+            
+                if(fish.getHooked()){
+                    if(fish.getIsAnimationComplete()){
+                    isWaitingForFish=false;
+                    isReeling=true;
+                    fish = null;
+                    }
+                    
+                }
+                else{
+                    fish.update(fishingLine.getFishingLineFloat().getX(),fishingLine.getFishingLineFloat().getY());
+                }
+
+            }
+
             if (isReeling) {
+                
                 fishingLine.update(isLeftHeld, isRightHeld, isMouseHeld);
                 if (fishingLine.getIsGameOver()) {
                     isReeling = false;
@@ -255,8 +305,8 @@ public class GameLoop extends JPanel implements ActionListener {
             String newPath = door.levelChanged();
             if (newPath != null) {
                 gameData.loadGameData(newPath);
-                player = new Player(player.getX(), player.getY(), player.getW(), player.getH(), gameData.getPlayer(), maxSpeed);
-                background = new Background(background.getX(), background.getY(), background.getW(), background.getH(), gameData.getBackground());
+                player = new Player(350, 400, 100, 100, gameData.getPlayer(), maxSpeed);
+                background = new Background(0, 0, background.getW(), background.getH(), gameData.getBackground());
                 logic.setPlayer(player);
                 camera.setPlayer(player);
                 camera.setLogic(logic);
@@ -292,16 +342,28 @@ public class GameLoop extends JPanel implements ActionListener {
                     fishingSpot.move(camera.getDx(), camera.getDy());
                 }
             }
+            if (gameData.getWater()!=null){
+                gameData.getWater().move(camera.getDx(), camera.getDy());
+            }
         }
 
         // Check collisions with other sprites
+        if(!god){
         logic.collisionDetection(player, gameData.getSprites());
         logic.collisionDetection(player, gameData.getDoors());
         if (gameData.getFishingSpots() != null) {
             logic.collisionDetection(player, gameData.getFishingSpots());
         }
+    }
         if (fishingLine != null) {
             fishingLine.setIsGameOver(logic.isColliding(player, fishingLine.getFishingLineFloat()));
+        }
+        if(fishingLine!=null && fish!=null){
+            if(logic.isColliding(fish,fishingLine.getFishingLineFloat())){
+                fish.hooking();
+            }
+                
+            
         }
 
         // Redraw the screen

@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 public class Sprite {
     protected int x, y, w, h; // Position and dimensions of the sprite
     protected int dx, dy;    // Velocity of the sprite
+    protected boolean isVisible;
 
     /**
      * Constructs a new {@code Sprite} with the specified position and dimensions.
@@ -26,6 +27,7 @@ public class Sprite {
         this.h = h;
         dx = 0;
         dy = 0;
+        isVisible = true;
     }
 
     /**
@@ -35,7 +37,8 @@ public class Sprite {
      */
     public void draw(Graphics2D g) {
         g.setColor(Color.BLUE); // Set the color for the sprite
-        g.fillRect(x, y, w, h); // Draw the sprite as a filled rectangle        
+        g.fillRect(x, y, w, h); // Draw the sprite as a filled rectangle    
+            
     }
 
     /**
@@ -48,6 +51,7 @@ public class Sprite {
         setX(getX() + dx);
         setY(getY() + dy);
     }
+
 
     /**
      * This method is called when the sprite collides with another object.
@@ -142,4 +146,12 @@ public class Sprite {
      * @param dy The new y-component of the sprite's velocity.
      */
     public void setDy(int dy) { this.dy = dy; }
+
+    public Boolean getIsVisbile(){
+        return isVisible;
+    }
+
+    public void setIsVisible(Boolean isVisible){
+        this.isVisible =isVisible;
+    }
 }

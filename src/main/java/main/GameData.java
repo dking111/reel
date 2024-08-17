@@ -18,6 +18,8 @@ public class GameData {
     private String background;
     private String player;
     private List<FishingSpot> fishingSpots;
+    private String fish;
+    private Water water;
 
     /**
      * Constructs a GameData instance and initializes it by loading data from the specified JSON file.
@@ -47,6 +49,8 @@ public class GameData {
             this.player = data.player;
             this.background = data.background;
             this.fishingSpots = data.fishingSpots;
+            this.fish = data.fish;
+            this.water = data.water;
         } catch (IOException e) {
             e.printStackTrace(); // Print error message
         }
@@ -122,5 +126,18 @@ public class GameData {
      */
     public List<FishingSpot> getFishingSpots() {
         return fishingSpots;
+    }
+
+    /**
+     * Returns the path of the fish
+     *
+     * @return The fish resource path as a string.
+     */
+    public String getFish() {
+        return fish;
+    }
+
+    public Water getWater(){
+        return water;
     }
 }
