@@ -61,7 +61,7 @@ public class GameLoop extends JPanel implements ActionListener {
         logic = new Logic(player, gameData);
         camera = new Camera(logic, gameData, player);
         background = new Background(0, 0, gameData.getWidth(), gameData.getHeight(), gameData.getBackground());
-        button = new Button(50, 50, 50, 50, Color.RED, Color.MAGENTA, Color.ORANGE, logic);
+        button = new Button(50, 50, 50, 50, Color.RED, Color.MAGENTA, Color.ORANGE, null);
         isFishing = false;
         isCharging = false;
         isCasting = false;
@@ -124,6 +124,9 @@ public class GameLoop extends JPanel implements ActionListener {
                 int key = e.getKeyCode();
                 if (isFishing == null) {
                     isFishing = false;
+                }
+                if (key == KeyEvent.VK_ESCAPE){
+                    timerStop();
                 }
                 if (key == KeyEvent.VK_1){
                     debug=!debug;
@@ -189,10 +192,16 @@ public class GameLoop extends JPanel implements ActionListener {
 
         // Initialize the timer to call actionPerformed() at regular intervals
         timer = new Timer(16, this); // Approximately 60 FPS (1000ms/60)
-        timer.start();
+        timerStart();
         setFocusable(true);
     }
+    public void timerStart(){
+        timer.start();
+    }
+    public void timerStop(){
+        timer.stop();
 
+    }
     /**
      * Paints the game components onto the panel.
      * 

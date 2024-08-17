@@ -9,7 +9,7 @@ import java.awt.Graphics2D;
  */
 public class Button extends Sprite {
     private Color inactiveColor, hoverColor, activeColor;
-    private Logic logic;
+    private Runnable action;
     private boolean isHovered;
     private boolean isActive;
 
@@ -23,14 +23,14 @@ public class Button extends Sprite {
      * @param inactiveColor The color of the button when inactive.
      * @param hoverColor The color of the button when hovered.
      * @param activeColor The color of the button when active (pressed).
-     * @param logic The logic to execute when the button is pressed.
+     * @param action The logic to execute when the button is pressed.
      */
-    public Button(int x, int y, int w, int h, Color inactiveColor, Color hoverColor, Color activeColor, Logic logic) {
+    public Button(int x, int y, int w, int h, Color inactiveColor, Color hoverColor, Color activeColor, Runnable action) {
         super(x, y, w, h);
         this.inactiveColor = inactiveColor;
         this.hoverColor = hoverColor;
         this.activeColor = activeColor;
-        this.logic = logic;
+        this.action = action;
         this.isHovered = false;
         this.isActive = false;
 
@@ -64,6 +64,9 @@ public class Button extends Sprite {
      */
     public void onPress() {
         System.out.println("Button Pressed!");
+        if (action != null) {
+            action.run(); // Execute the passed function
+        }
         // You can implement specific logic for what happens when the button is pressed
     }
 

@@ -20,8 +20,10 @@ public class Main extends JFrame {
         setLocationRelativeTo(null);
 
         // Add the game panel to the frame
+        GUI gui = new GUI();
         GameLoop gamePanel = new GameLoop();
-        add(gamePanel);
+        add(gui);
+        //add(gamePanel);
 
         setVisible(true);
     }
