@@ -44,13 +44,15 @@ public class GameLoop extends JPanel implements ActionListener {
     private Water water;
     private Boolean debug;
     private Boolean god;
+    private Main mainFrame;
 
     /**
      * Initializes the game loop by setting up the panel properties, game data, player, camera,
      * background, and other game elements. It also configures mouse and key listeners for user input.
      */
-    public GameLoop() {
+    public GameLoop(Main mainFrame) {
         // Set panel properties
+        this.mainFrame = mainFrame;
         setPreferredSize(new Dimension(800, 600));
         setBackground(Color.BLACK);
         maxSpeed = 5;
@@ -61,7 +63,7 @@ public class GameLoop extends JPanel implements ActionListener {
         logic = new Logic(player, gameData);
         camera = new Camera(logic, gameData, player);
         background = new Background(0, 0, gameData.getWidth(), gameData.getHeight(), gameData.getBackground());
-        button = new Button(50, 50, 50, 50, Color.RED, Color.MAGENTA, Color.ORANGE, null);
+        button = new Button(50, 50, 50, 50, Color.RED, Color.MAGENTA, Color.ORANGE, mainFrame::switchToGUI);
         isFishing = false;
         isCharging = false;
         isCasting = false;
@@ -202,6 +204,7 @@ public class GameLoop extends JPanel implements ActionListener {
         timer.stop();
 
     }
+
     /**
      * Paints the game components onto the panel.
      * 
@@ -263,7 +266,7 @@ public class GameLoop extends JPanel implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-
+System.out.println("hey");
         if (isFishing != null) {
             if (isCharging) {
                 if (isMouseHeld && chargeMeter != null) {

@@ -7,6 +7,8 @@ import javax.swing.JFrame;
  * It extends {@link JFrame} to create a window for the game.
  */
 public class Main extends JFrame {
+    private GUI gui;
+    private GameLoop gameLoop;
 
     /**
      * Constructs a new {@code Main} window with specified properties.
@@ -19,13 +21,39 @@ public class Main extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Add the game panel to the frame
-        GUI gui = new GUI();
-        GameLoop gamePanel = new GameLoop();
+        // Initialize panels
+        gui = new GUI(this);
+        gameLoop = new GameLoop(this);
+        gameLoop.timerStop();
+        // Start with the GUI panel
         add(gui);
-        //add(gamePanel);
 
         setVisible(true);
+    }
+
+    /**
+     * Switches the view from the GUI panel to the GameLoop panel.
+     */
+    public void switchToGameLoop() {
+        // Remove the GUI panel and add the GameLoop panel
+        remove(gui);
+        gui.timerStop();
+        add(gameLoop);
+        revalidate();
+        repaint();
+        gameLoop.requestFocus(); // Make sure the GameLoop panel can receive input focus
+        gameLoop.timerStart();
+    }
+
+    public void switchToGUI() {
+        // Remove the GUI panel and add the GameLoop panel
+        remove(gameLoop);
+        gameLoop.timerStop();
+        add(gui);
+        revalidate();
+        repaint();
+        gui.requestFocus(); // Make sure the GameLoop panel can receive input focus
+        gui.timerStart();
     }
 
     /**
@@ -37,12 +65,3 @@ public class Main extends JFrame {
         new Main();
     }
 }
-
-// To Do
-// Graphics (initial) DONE
-// Animation (initial) DONE
-// Changing location (loading different levels) DONE
-// Enhanced animation (changing state, forward, backward) DONE
-// Fishing controls DONE
-// Game interface (GUI)
-// Create an actual level
