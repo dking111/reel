@@ -2,6 +2,9 @@ package main;
 
 import javax.swing.JFrame;
 
+import main.GUI.GUI;
+import main.core.GameLoop;
+
 /**
  * The main entry point of the application that sets up and displays the main game window.
  * It extends {@link JFrame} to create a window for the game.
