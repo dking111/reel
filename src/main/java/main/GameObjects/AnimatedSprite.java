@@ -176,5 +176,16 @@ public class AnimatedSprite extends Sprite {
     public Boolean getIsAnimationComplete() {
         return isAnimationComplete;
     }
-
+    public void setState(String state) {
+        this.state = state;
+}
+    public String getState() {
+        return state;
+}
+public void setAnimationSpeed(int animationSpeed) {
+    this.animationSpeed = animationSpeed;
+}
+public int getAnimationSpeed() {
+    return animationSpeed;
+}
 }

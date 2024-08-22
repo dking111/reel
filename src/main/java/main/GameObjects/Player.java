@@ -15,6 +15,7 @@ import org.javatuples.Pair;
 public class Player extends AnimatedSprite {
     private int angle;
     private int maxSpeed;
+    private Boolean isFishing;
 
     /**
      * Constructs a new {@code Player} object with the specified position, size, image path, and maximum speed.
@@ -30,6 +31,7 @@ public class Player extends AnimatedSprite {
         super(x, y, w, h, path,5);
         angle = 0;
         this.maxSpeed = maxSpeed;
+        isFishing = false;
     }
 
     /**
@@ -43,7 +45,8 @@ public class Player extends AnimatedSprite {
         AffineTransform originalTransform = g.getTransform();
         angle = calcAngle();
         rotate(angle, g);
-        state = calcState();
+        if(!isFishing)
+        {state = calcState();}
         super.draw(g);
         // Restore the original transformation
         g.setTransform(originalTransform);
@@ -110,4 +113,8 @@ public class Player extends AnimatedSprite {
     public int getMaxSpeed() {
         return maxSpeed;
     }
+    public void setIsFishing(Boolean isFishing) {
+        this.isFishing = isFishing;
+    }
 }
+

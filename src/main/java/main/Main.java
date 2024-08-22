@@ -68,3 +68,11 @@ public class Main extends JFrame {
         new Main();
     }
 }
+
+
+
+
+//Enhance gameplay, create levels -make wait for fish/ fish caught animation// improved fishing animations
+//fix bug with door in house
+//Create saves / persistent data
+//
