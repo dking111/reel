@@ -47,6 +47,7 @@ public class Player extends AnimatedSprite {
         rotate(angle, g);
         if(!isFishing)
         {state = calcState();}
+
         super.draw(g);
         // Restore the original transformation
         g.setTransform(originalTransform);

@@ -7,7 +7,7 @@
     ],
 
     "doors": [
-      {"x": 250, "y": 550, "w": 260, "h": 50,"path":"src\\main\\resources\\levels\\2.json"}
+      {"x": 250, "y": 550, "w": 260, "h": 50,"path":"src\\main\\resources\\levels\\path.json"}
 
     ],
 

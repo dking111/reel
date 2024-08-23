@@ -1,0 +1,25 @@
+{
+    "sprites": [
+        {"x": 0, "y": 25, "w": 800, "h": 10}
+    ],
+
+    "doors": [
+      {"x": 400, "y": 0, "w": 260, "h": 50,"path":"src\\main\\resources\\levels\\dock.json"},
+      {"x": 0, "y": 250, "w": 50, "h": 50,"path":"src\\main\\resources\\levels\\house.json"}
+
+    ],
+
+
+    "cameraBounds": 0.9,
+    "width":800,
+    "height":600,
+    "player":"src\\main\\resources\\assets\\player",
+    "background":"src\\main\\resources\\assets\\background_path",
+    "fish":"src\\main\\resources\\assets\\fish"
+
+      
+
+
+    
+
+}

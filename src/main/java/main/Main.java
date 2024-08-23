@@ -71,8 +71,9 @@ public class Main extends JFrame {
 
 
 
-
-//Enhance gameplay, create levels -make wait for fish/ fish caught animation// improved fishing animations
+//Enhanced animations DONE
+//Enhance gameplay, create levels and house, give reason to play
+//convert all measurments to be with constants (percentages/ preset sizes)
 //fix bug with door in house
 //Create saves / persistent data
 //

@@ -1,7 +1,6 @@
 package main.GameObjects;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
@@ -31,16 +30,17 @@ public class AnimatedSprite extends Sprite {
      * @param w the width of the sprite.
      * @param h the height of the sprite.
      * @param path the path to the directory containing animation subdirectories.
+     * @param animationSpeed the speed of the animation.
      */
-    public AnimatedSprite(int x, int y, int w, int h, String path,int animationSpeed) {
+    public AnimatedSprite(int x, int y, int w, int h, String path, int animationSpeed) {
         super(x, y, w, h);
         currentFrame = 0;
         state = "idle";
         animationDict = loadAnimation(path);
         currentAnimation = animationDict.get("idle");
         frameCounter = 0;
-        this.animationSpeed = animationSpeed; // Default speed is 1 frame per second (assuming 60 FPS)
-        isAnimationComplete=false;
+        this.animationSpeed = animationSpeed;
+        isAnimationComplete = false;
     }
 
     /**
@@ -50,21 +50,24 @@ public class AnimatedSprite extends Sprite {
      */
     @Override
     public void draw(Graphics2D g) {
-        if(isVisible){
-        currentAnimation = animationDict.get(state);
-        g.drawImage(currentAnimation.get(currentFrame), getX(), getY(), getW(), getH(), null);
-        
+        if (isVisible) {
+            // Fetch the correct animation based on the current state
+            currentAnimation = animationDict.get(state);
 
-        isAnimationComplete = (currentFrame==currentAnimation.size()-1)?true:false;
+            // Draw the current frame of the animation
+            g.drawImage(currentAnimation.get(currentFrame), getX(), getY(), getW(), getH(), null);
+            
+            // Check if the current animation is complete before updating the frame
+            isAnimationComplete = (currentFrame == currentAnimation.size() - 1);
 
-        // Update frame if frameCounter is at the update interval
-        if (frameCounter == 1) {
-            currentFrame = (currentFrame + 1) % currentAnimation.size();
+
+            if (frameCounter == 1) {
+                currentFrame = (currentFrame + 1) % currentAnimation.size();
+            }
+            // Increment frameCounter and reset when it reaches the animation speed
+            frameCounter = (frameCounter + 1) % animationSpeed;
+            
         }
-
-        // Increment frameCounter and reset it when it reaches the animation speed
-        frameCounter = (frameCounter + 1) % animationSpeed;
-    }
     }
 
     /**
@@ -98,94 +101,103 @@ public class AnimatedSprite extends Sprite {
 
         return dict;
     }
-    public void refreshAnimation(){
+
+    /**
+     * Refreshes the current animation, resetting it to the beginning.
+     */
+    public void refreshAnimation() {
         currentAnimation = animationDict.get(state);
         currentFrame = 0;
-        frameCounter=0;
+        frameCounter = 0;
+        isAnimationComplete = false; // Ensure animation starts fresh
     }
 
+    /**
+     * Sets the state of the sprite and refreshes the animation if the state changes.
+     * 
+     * @param newState the new state to set for the sprite.
+     */
+    public void setState(String newState) {
+        if (!state.equals(newState)) {
+            state = newState;
+            refreshAnimation(); // Reset animation when the state changes
+            isAnimationComplete = false; // Reset the completion flag
+        }
+    }
 
-    
-
+    /**
+     * Gets the bearing between two points in degrees.
+     * 
+     * @param x1 the x-coordinate of the first point.
+     * @param y1 the y-coordinate of the first point.
+     * @param x2 the x-coordinate of the second point.
+     * @param y2 the y-coordinate of the second point.
+     * @return the bearing in degrees.
+     */
     public int getBearing(int x1, int y1, int x2, int y2) {
-        // Calculate the differences in x and y coordinates
         int dx = x2 - x1;
         int dy = y2 - y1;
-    
-        // Calculate the angle in radians using atan2 (angle relative to the x-axis)
         double angleRadians = Math.atan2(dy, dx);
-    
-        // Convert the angle to degrees
         double angleDegrees = Math.toDegrees(angleRadians);
-    
-        // Adjust angle to bearing:
-        // 0 degrees should point to the north, and it increases clockwise.
-        // So subtract 90 degrees to rotate the angle and convert to bearing.
         double bearing = (angleDegrees + 90);
-    
-        // Normalize the bearing to a range of 0 to 360 degrees
+
         if (bearing < 0) {
             bearing += 360;
         }
-    
-        // Round the result to the nearest integer and return
+
         return (int) Math.round(bearing);
     }
-    
+
     /**
-     * Rotates the {@code Graphics2D} context around the center of the image by the specified angle.
-     *
+     * Rotates the Graphics2D context around the center of the image by the specified angle.
+     * 
      * @param degree The angle in degrees to rotate the graphics context.
-     * @param g      The {@code Graphics2D} context to rotate.
-     * @return The rotated {@code Graphics2D} context.
+     * @param g      The Graphics2D context to rotate.
+     * @return The rotated Graphics2D context.
      */
     public Graphics2D rotate(int degree, Graphics2D g) {
-        // Calculate the center of the image
         int centerX = getX() + getW() / 2;
         int centerY = getY() + getH() / 2;
-
-        // Rotate the graphics context around the center of the image
         g.rotate(Math.toRadians(degree), centerX, centerY);
-
         return g;
     }
 
+    /**
+     * Moves the sprite towards a target position at a specified speed.
+     * 
+     * @param targetX the target x-coordinate.
+     * @param targetY the target y-coordinate.
+     * @param speed the speed at which to move the sprite.
+     */
     public void moveTowards(int targetX, int targetY, int speed) {
-        // Calculate the differences in x and y coordinates
         double stepSize = speed;
         double dx = targetX - getX();
         double dy = targetY - getY();
-        
-        // Calculate the distance between the current position and the target position
         double distance = Math.sqrt(dx * dx + dy * dy);
-        
-        // If the distance is less than the step size, move directly to the target
+
         if (distance < stepSize) {
             setX(targetX);
             setY(targetY);
         } else {
-            // Normalize the direction vector
             dx /= distance;
             dy /= distance;
-            
-            // Update the position by moving stepSize in the direction of the target
-            move((int)Math.round(dx * stepSize),(int)Math.round(dy * stepSize));
-
+            move((int)Math.round(dx * stepSize), (int)Math.round(dy * stepSize));
         }
     }
+
     public Boolean getIsAnimationComplete() {
         return isAnimationComplete;
     }
-    public void setState(String state) {
-        this.state = state;
-}
+
     public String getState() {
         return state;
-}
-public void setAnimationSpeed(int animationSpeed) {
-    this.animationSpeed = animationSpeed;
-}
-public int getAnimationSpeed() {
-    return animationSpeed;
-}
+    }
+
+    public void setAnimationSpeed(int animationSpeed) {
+        this.animationSpeed = animationSpeed;
+    }
+
+    public int getAnimationSpeed() {
+        return animationSpeed;
+    }
 }

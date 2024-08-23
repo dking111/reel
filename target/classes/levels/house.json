@@ -6,7 +6,7 @@
     ],
 
     "doors": [
-      {"x": 200, "y": 500, "w": 50, "h": 50,"path":"src\\main\\resources\\levels\\1.json"}
+      {"x": 200, "y": 500, "w": 50, "h": 50,"path":"src\\main\\resources\\levels\\path.json"}
 
     ],
     "cameraBounds": 0.9,
