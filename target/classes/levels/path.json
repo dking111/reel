@@ -4,8 +4,8 @@
     ],
 
     "doors": [
-      {"x": 400, "y": 0, "w": 260, "h": 50,"path":"src\\main\\resources\\levels\\dock.json"},
-      {"x": 0, "y": 250, "w": 50, "h": 50,"path":"src\\main\\resources\\levels\\house.json"}
+      {"x": 350, "y": 0, "w": 150, "h": 50,"path":"src\\main\\resources\\levels\\dock.json","toX":350,"toY":400},
+      {"x": 0, "y": 250, "w": 50, "h": 200,"path":"src\\main\\resources\\levels\\path1.json","toX":650,"toY":300}
 
     ],
 

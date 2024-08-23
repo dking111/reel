@@ -147,7 +147,7 @@ public class Sprite {
      */
     public void setDy(int dy) { this.dy = dy; }
 
-    public Boolean getIsVisbile(){
+    public Boolean getIsVisible(){
         return isVisible;
     }
 

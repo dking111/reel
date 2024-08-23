@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 public class Door extends Sprite {
     private String path;
     private Boolean levelChange;
+    private int toX, toY;
 
     /**
      * Constructs a Door instance with the specified parameters.
@@ -20,10 +21,13 @@ public class Door extends Sprite {
      * @param h The height of the door.
      * @param path The path to the level or resource associated with this door.
      */
-    public Door(int x, int y, int w, int h, String path) {
+    public Door(int x, int y, int w, int h, String path,int toX,int toY) {
         super(x, y, w, h);
         this.path = path;
         levelChange = false;
+        isVisible = true;
+        this.toX =toX;
+        this.toY =toY;
     }
 
     /**
@@ -63,5 +67,11 @@ public class Door extends Sprite {
         } catch (NullPointerException e) {
             return null;
         }
+    }
+    public int getToX() {
+        return toX;
+    }
+    public int getToY() {
+        return toY;
     }
 }

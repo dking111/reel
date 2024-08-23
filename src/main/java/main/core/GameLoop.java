@@ -275,12 +275,12 @@ public class GameLoop extends JPanel implements ActionListener {
         if(debug){
         if(gameData.getWater()!=null){
             gameData.getWater().draw(g);
+        }
 
         for (Door door : gameData.getDoors()) {
             door.draw(g);
-            door.setIsVisible(true);
         }
-        }
+        
         for (Sprite sprite : gameData.getSprites()) {
             sprite.draw(g);
         }
@@ -300,6 +300,8 @@ public class GameLoop extends JPanel implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+
+        
         if (isFishing != null) {
             if (isCharging) {
                 if (isMouseHeld && chargeMeter != null) {
@@ -392,7 +394,7 @@ public class GameLoop extends JPanel implements ActionListener {
             String newPath = door.levelChanged();
             if (newPath != null) {
                 gameData.loadGameData(newPath);
-                player = new Player(350, 400, 100, 100, gameData.getPlayer(), maxSpeed);
+                player = new Player(door.getToX(), door.getToY(), 100, 100, gameData.getPlayer(), maxSpeed);
                 background = new Background(0, 0, background.getW(), background.getH(), gameData.getBackground());
                 logic.setPlayer(player);
                 camera.setPlayer(player);

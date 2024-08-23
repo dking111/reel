@@ -34,6 +34,11 @@ public class Camera {
      * Adjusts the camera to keep the player within the defined bounds of the game world.
      */
     public void cameraMove() {
+        if(gameData.getCameraBounds()==0){
+            dx=0;
+            dy=0;
+            return;
+        }
         float playerRight = player.getX() + player.getW();
         float playerBottom = player.getY() + player.getH();
         float boundedHeight = gameData.getHeight() * gameData.getCameraBounds();

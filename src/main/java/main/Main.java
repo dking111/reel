@@ -72,6 +72,7 @@ public class Main extends JFrame {
 
 
 //Enhanced animations DONE
+//fix bug with door in house DONE was a misplaced bracket DONE
 //Enhance gameplay, create levels and house, give reason to play
 //convert all measurments to be with constants (percentages/ preset sizes)
 //fix bug with door in house

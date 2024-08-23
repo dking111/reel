@@ -1,15 +1,17 @@
 {
     "sprites": [
-      {"x": 150, "y": 250, "w": 50, "h": 50},
-      {"x": 550, "y": 250, "w": 50, "h": 50}
+      {"x": -50, "y": -50, "w": 850, "h": 50},
+      {"x": -50, "y": -50, "w": 50, "h": 650},
+      {"x": 800, "y": -50, "w": 50, "h": 700},
+      {"x": -50, "y": 600, "w": 850, "h": 50}
 
     ],
 
     "doors": [
-      {"x": 200, "y": 500, "w": 50, "h": 50,"path":"src\\main\\resources\\levels\\path.json"}
+      {"x": 100, "y": 550, "w": 100, "h": 50,"path":"src\\main\\resources\\levels\\path1.json","toX":100,"toY":51}
 
     ],
-    "cameraBounds": 0.9,
+    "cameraBounds": 0,
     "width":800,
     "height":600,
     "player":"src\\main\\resources\\assets\\player",
