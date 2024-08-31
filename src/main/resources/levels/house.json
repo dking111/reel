@@ -8,7 +8,7 @@
     ],
 
     "doors": [
-      {"x": 100, "y": 550, "w": 100, "h": 50,"path":"src\\main\\resources\\levels\\path1.json","toX":100,"toY":51}
+      {"x": 100, "y": 550, "w": 100, "h": 50,"path":"src\\main\\resources\\levels\\path1.json","toX":100,"toY":405}
 
     ],
     "cameraBounds": 0,

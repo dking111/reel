@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import main.Main;
+
 /**
  * Manages and provides access to different pages in the GUI.
  * Each page contains buttons, texts, and image sprites that define its content and behavior.
@@ -13,6 +15,8 @@ public class PageData {
     private Page menuPage;
     private Page settingsPage;
     private Page savesPage;
+    private Page shelfPage;
+    private Page pausePage;
     private GUI gui;
 
     /**
@@ -26,9 +30,13 @@ public class PageData {
         menuPage = setMenuPage();
         settingsPage = setSettingsPage();
         savesPage = setSavesPage();
+        shelfPage = setShelfPage();
+        pausePage = setPausePage();
         pages.add(menuPage);
         pages.add(settingsPage);
         pages.add(savesPage);
+        pages.add(shelfPage);
+        pages.add(pausePage);
     }
 
     /**
@@ -65,7 +73,7 @@ public class PageData {
 
         imageSprites.add(new ImageSprite(0, 0, 800, 600, "src\\main\\resources\\GUI\\menuBackground.png"));
 
-        return new Page("menu", buttons, texts, imageSprites);
+        return new Page("menu",false, buttons, texts, imageSprites);
     }
 
     /**
@@ -92,7 +100,7 @@ public class PageData {
                 "src\\main\\resources\\GUI\\backIcon.png"   // Path to the image file
                 ));
 
-        return new Page("settings", buttons, texts, imageSprites);
+        return new Page("settings",false, buttons, texts, imageSprites);
     }
 
     /**
@@ -129,7 +137,30 @@ public class PageData {
                 Color.WHITE                                // Text color
                 ));
 
-        return new Page("saves", buttons, texts, imageSprites);
+        return new Page("saves",false, buttons, texts, imageSprites);
+    }
+
+
+    private Page setShelfPage() {
+        List<Button> buttons = new ArrayList<Button>();
+        List<Text> texts = new ArrayList<Text>();
+        List<ImageSprite> imageSprites = new ArrayList<ImageSprite>();
+        
+        buttons.add(new Button(0, 0, 100, 100, Color.RED, Color.RED, Color.RED, Main::switchToGameLoop, 10, 10));
+        
+
+        return new Page("shelf",true, buttons, texts, imageSprites);
+    }
+
+    private Page setPausePage() {
+        List<Button> buttons = new ArrayList<Button>();
+        List<Text> texts = new ArrayList<Text>();
+        List<ImageSprite> imageSprites = new ArrayList<ImageSprite>();
+        
+        buttons.add(new Button(300, 100, 200, 400, Color.RED, Color.RED, Color.RED, Main::switchToGameLoop, 10, 10));
+        
+
+        return new Page("pause",true, buttons, texts, imageSprites);
     }
 
     /**

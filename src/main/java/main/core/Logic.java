@@ -37,6 +37,12 @@ public class Logic {
         collisionDetection(player, spriteList);
     }
 
+    public void collisionDetection(Sprite player, Sprite sprite, Integer clearance) {
+        List<Sprite> spriteList = new ArrayList<>();
+        spriteList.add(sprite);
+        collisionDetection(player, spriteList,clearance);
+    }
+
     /**
      * Checks for collisions between the player and a list of sprites.
      * 
@@ -103,6 +109,10 @@ public class Logic {
                 player.setY(sprite.getY() + (sprite.getH() + clearance)); // Move player below the sprite
             }
         }
+        //resets speed to prevent running into object again
+        player.setDx(0);
+        player.setDy(0);
+        
     }
 
 

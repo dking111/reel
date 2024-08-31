@@ -2,10 +2,11 @@ package main.GUI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -14,8 +15,10 @@ import main.Main;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.image.BufferedImage;
 
 /**
  * The GUI class handles the graphical user interface elements and interactions.
@@ -29,6 +32,7 @@ public class GUI extends JPanel implements ActionListener {
     private Main mainFrame;
     private Page currentPage;
     private PageData pageData;
+    private BufferedImage backgroundImage; // New field to store the background image
 
     /**
      * Constructs the GUI panel.
@@ -59,10 +63,20 @@ public class GUI extends JPanel implements ActionListener {
             public void mousePressed(MouseEvent e) {
                 int clicked = e.getButton();
                 if (clicked == MouseEvent.BUTTON1) {
-
                     for (Button button : currentPage.getButtons()) {
                         button.listener(mouseX, mouseY, true);
                     }
+                }
+            }
+        });
+
+        // Add key listener for player movement
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                int key = e.getKeyCode();
+                if (key == KeyEvent.VK_ESCAPE){   
+                    Main.switchToGameLoop();   
                 }
             }
         });
@@ -73,6 +87,16 @@ public class GUI extends JPanel implements ActionListener {
 
         // Ensure the panel can receive focus
         setFocusable(true);
+    }
+
+    /**
+     * Sets the background image for the GUI.
+     * 
+     * @param image The BufferedImage to be set as the background.
+     */
+    public void setBackgroundImage(BufferedImage image) {
+        this.backgroundImage = image;
+        repaint(); // Repaint the panel to update the background
     }
 
     /**
@@ -130,7 +154,13 @@ public class GUI extends JPanel implements ActionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        // Draw the background image if it exists
+        if (backgroundImage != null && currentPage.getTransparent()) {
+            g2d.drawImage(backgroundImage, 0, 0, null);
+        }
 
+        // Draw other GUI elements on top
         for (ImageSprite imageSprite : currentPage.getImageSprites()) {
             imageSprite.draw(g2d);
         }
