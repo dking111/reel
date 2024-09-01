@@ -3,11 +3,9 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.util.Random;
 
-import main.core.Logic;
 
 public class Fish extends AnimatedSprite{
     private Water water;
-    private Logic logic;
     private Random random;
     private int angle;
     private int fishingLineX;
@@ -15,13 +13,19 @@ public class Fish extends AnimatedSprite{
     private int speed;
     private Boolean hooked;
     private Boolean hasBeenHooked;
-    public Fish(int x,int y,int w,int h,String path,int fishingLineX,int fishingLineY,Water water, Logic logic){
+    private String name;
+    private int rarity;
+    private int maxWeight,minWeight, weight;
+
+    public Fish(int x,int y,int w,int h,int maxWeight,int minWeight,String name,int rarity,String path){
         super(x, y, w, h,path,5);
-        this.water = water;
-        this.logic = logic;
-        this.fishingLineX = fishingLineX;
-        this.fishingLineY = fishingLineY;
-        isVisible =false;
+
+        this.maxWeight = maxWeight;
+        this.minWeight = minWeight;
+        this.name = name;
+        this.rarity = rarity;
+        
+        isVisible = false;
         random = new Random();
         angle = 0;
         hooked = false;
@@ -29,7 +33,16 @@ public class Fish extends AnimatedSprite{
         speed=5;
     }
 
-    public void spawn(){
+    public void spawn(Water water,int fishingLineX,int fishingLineY){
+        System.out.print(minWeight);
+        System.out.print(" ");
+        System.out.println(maxWeight);
+        this.weight = random.nextInt(minWeight,maxWeight);
+        this.w = weight;
+        this.h = weight;
+        this.water = water;
+        this.fishingLineX = fishingLineX;
+        this.fishingLineY = fishingLineY;
         x = random.nextInt(water.getX(),water.getX()+water.getW());
         y = random.nextInt(water.getY(),water.getY()+water.getH());
         isVisible = true;
@@ -78,5 +91,16 @@ public class Fish extends AnimatedSprite{
         this.speed=speed;
     }
     
+    public int getRarity() {
+        return rarity;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
 

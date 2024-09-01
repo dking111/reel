@@ -20,7 +20,8 @@
     "height":600,
     "player":"src\\main\\resources\\assets\\player",
     "background":"src\\main\\resources\\assets\\background",
-    "fish":"src\\main\\resources\\assets\\fish"
+    "fish":"src\\main\\resources\\assets\\fish",
+    "habitat":"Lake"
 
       
 

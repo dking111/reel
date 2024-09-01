@@ -35,7 +35,6 @@ public class Main extends JFrame {
         gameLoop = new GameLoop(this);
         gameLoop.timerStop();
 
-        db.getFishByName("Rainbow Trout");
         // Add panels to frame
         add(gui);
 
