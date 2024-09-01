@@ -3,6 +3,7 @@ package main;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import main.GUI.GUI;
+import main.core.Database;
 import main.core.GameLoop;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
@@ -15,7 +16,7 @@ public class Main extends JFrame {
     private static Main instance; // Singleton instance
     private GUI gui;
     private GameLoop gameLoop;
-
+    private Database db;
     /**
      * Constructs a new {@code Main} window with specified properties.
      * Sets up the window title, size, and other properties, and adds the game panel.
@@ -27,6 +28,8 @@ public class Main extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        //db
+        db = new Database();
         // Initialize panels
         gui = new GUI(this);
         gameLoop = new GameLoop(this);
@@ -118,3 +121,12 @@ public class Main extends JFrame {
         return getInstance().gui;
     }
 }
+
+
+//to do
+
+//database
+//enhance gameplay (see discord)
+//sound/music
+//resizeable options (optional)
+//graphics overhaul

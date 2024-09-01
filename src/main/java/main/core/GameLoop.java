@@ -64,6 +64,9 @@ public class GameLoop extends JPanel implements ActionListener {
     private Boolean god;
     private Main mainFrame;
     private Shelf shelf;
+    private java.util.List<Fish> possibleFishes;
+    private String currentHabitat;
+    private Random random;
     
 
     /**
@@ -95,6 +98,10 @@ public class GameLoop extends JPanel implements ActionListener {
         isRightHeld = false;
         debug=false;
         god=false;
+        currentHabitat = gameData.getHabitat();
+        if (currentHabitat!=null)
+        {possibleFishes = Database.getAllFishByHabitat(currentHabitat);}
+        random = new Random();
 
         // Add mouse motion listener to track mouse position
         addMouseMotionListener(new MouseMotionAdapter() {
@@ -337,8 +344,16 @@ public class GameLoop extends JPanel implements ActionListener {
                 if(fishWaitTimer<=0){
                     fishWaitTimer=0;
                 if (fish==null){
-                    fish = new Fish(350, 400,50,50,gameData.getFish(),fishingLine.getFishingLineFloat().getX(), fishingLine.getFishingLineFloat().getY(),gameData.getWater(),logic);
-                    fish.spawn();
+                    while(fish==null){
+                    for(Fish possibleFish: possibleFishes){
+                        if (random.nextInt(0,10)<possibleFish.getRarity()){
+                            fish = possibleFish;
+                            System.out.println(possibleFish.getName());
+                            break;
+                        }
+                    }
+                    }
+                    fish.spawn(gameData.getWater(),fishingLine.getFishingLineFloat().getX(), fishingLine.getFishingLineFloat().getY());
                 }
             
                 if(fish.getHooked()){
@@ -405,6 +420,9 @@ public class GameLoop extends JPanel implements ActionListener {
                 logic.setPlayer(player);
                 camera.setPlayer(player);
                 camera.setLogic(logic);
+                currentHabitat = gameData.getHabitat();
+                if (currentHabitat!=null)
+                {possibleFishes = Database.getAllFishByHabitat(currentHabitat);}
             }
         }
 
