@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import main.Main;
+import main.GameObjects.Fish;
+import main.GameObjects.Sprite;
+import main.core.Database;
 
 /**
  * Manages and provides access to different pages in the GUI.
@@ -37,7 +40,10 @@ public class PageData {
         pages.add(savesPage);
         pages.add(shelfPage);
         pages.add(pausePage);
+       
     }
+
+
 
     /**
      * Sets up the menu page with buttons, texts, and image sprites.
@@ -47,7 +53,8 @@ public class PageData {
     private Page setMenuPage() {
         List<Button> buttons = new ArrayList<Button>();
         List<Text> texts = new ArrayList<Text>();
-        List<ImageSprite> imageSprites = new ArrayList<ImageSprite>();
+        List<Sprite> sprites = new ArrayList<>();
+
         
         buttons.add(new TextButton(275, 475, 200, 50,
                 new Color(133, 186, 200),                   // Inactive color
@@ -71,9 +78,9 @@ public class PageData {
                 "src\\main\\resources\\GUI\\settingsIcon.png" // Path to the image file
                 ));
 
-        imageSprites.add(new ImageSprite(0, 0, 800, 600, "src\\main\\resources\\GUI\\menuBackground.png"));
+        sprites.add(new ImageSprite(0, 0, 800, 600, "src\\main\\resources\\GUI\\menuBackground.png"));
 
-        return new Page("menu",false, buttons, texts, imageSprites);
+        return new Page("menu",false, buttons, texts, sprites);
     }
 
     /**
@@ -84,9 +91,9 @@ public class PageData {
     private Page setSettingsPage() {
         List<Button> buttons = new ArrayList<Button>();
         List<Text> texts = new ArrayList<Text>();
-        List<ImageSprite> imageSprites = new ArrayList<ImageSprite>();
+        List<Sprite> sprites = new ArrayList<>();
         
-        imageSprites.add(new ImageSprite(0, 0, 800, 600, "src\\main\\resources\\GUI\\settingsBackground.png"));
+        sprites.add(new ImageSprite(0, 0, 800, 600, "src\\main\\resources\\GUI\\settingsBackground.png"));
 
         texts.add(new Text(300, 100, 30, "Settings", Color.WHITE));
 
@@ -100,7 +107,7 @@ public class PageData {
                 "src\\main\\resources\\GUI\\backIcon.png"   // Path to the image file
                 ));
 
-        return new Page("settings",false, buttons, texts, imageSprites);
+        return new Page("settings",false, buttons, texts, sprites);
     }
 
     /**
@@ -111,9 +118,9 @@ public class PageData {
     private Page setSavesPage() {
         List<Button> buttons = new ArrayList<Button>();
         List<Text> texts = new ArrayList<Text>();
-        List<ImageSprite> imageSprites = new ArrayList<ImageSprite>();
+        List<Sprite> sprites = new ArrayList<>();
         
-        imageSprites.add(new ImageSprite(0, 0, 800, 600, "src\\main\\resources\\GUI\\savesBackground.png"));
+        sprites.add(new ImageSprite(0, 0, 800, 600, "src\\main\\resources\\GUI\\savesBackground.png"));
 
         buttons.add(new ImageButton(10, 10, 50, 50,
                 new Color(133, 186, 200),                   // Inactive color
@@ -137,30 +144,83 @@ public class PageData {
                 Color.WHITE                                // Text color
                 ));
 
-        return new Page("saves",false, buttons, texts, imageSprites);
+        return new Page("saves",false, buttons, texts, sprites);
     }
 
+    public void refreshShelfPage(){
+        pages.remove(shelfPage);
+        shelfPage = setShelfPage();
+        pages.add(shelfPage);
+    }
 
     private Page setShelfPage() {
         List<Button> buttons = new ArrayList<Button>();
         List<Text> texts = new ArrayList<Text>();
-        List<ImageSprite> imageSprites = new ArrayList<ImageSprite>();
+        List<Sprite> sprites = new ArrayList<>();
+        sprites.add(new ImageSprite(100, 100, 600, 400, "src\\main\\resources\\GUI\\shelf.png"));
         
-        buttons.add(new Button(0, 0, 100, 100, Color.RED, Color.RED, Color.RED, Main::switchToGameLoop, 10, 10));
-        
+        List<Fish> allFish = Database.getAllFish();
 
-        return new Page("shelf",true, buttons, texts, imageSprites);
+        int column = 0;
+        int row = 0;
+        for (Fish fish : allFish){
+            fish.setIsVisible(true);
+            fish.setW(70);
+            fish.setH(70);
+            fish.setX(115+column*100);
+            fish.setY(115+row*100);
+            if(fish.getWeight()==0){
+                fish.setState("uncaught");
+            }
+            else{
+                fish.setState("dead");
+
+                buttons.add(new TextButton(115+column*100, 195+row*100, 75, 10,
+                     Color.YELLOW,                   // Inactive color
+                     Color.YELLOW,                   // Hover color
+                     Color.YELLOW,                   // Active color
+                    null,               // Action using a lambda to pass parameters
+                    0,                                        // Arc width for rounded corners
+                    0,
+                    String.valueOf(fish.getName()),                                    // Text to display
+                    10,                                        // Font size
+                    Color.BLACK                                // Text color
+                    ));
+
+
+                buttons.add(new TextButton(135+column*100, 205+row*100, 30, 10,
+                     Color.YELLOW,                   // Inactive color
+                     Color.YELLOW,                   // Hover color
+                     Color.YELLOW,                   // Active color
+                    null,               // Action using a lambda to pass parameters
+                    0,                                        // Arc width for rounded corners
+                    0,
+                    String.valueOf(fish.getWeight()) + " lb",                                    // Text to display
+                    10,                                        // Font size
+                    Color.BLACK                                // Text color
+                    ));
+            }
+            sprites.add(fish);
+            column = (column+1)%6;
+            if (column==0){
+                row+=1;
+            }
+
+        }
+
+
+        return new Page("shelf",true, buttons, texts, sprites);
     }
 
     private Page setPausePage() {
         List<Button> buttons = new ArrayList<Button>();
         List<Text> texts = new ArrayList<Text>();
-        List<ImageSprite> imageSprites = new ArrayList<ImageSprite>();
+        List<Sprite> sprites = new ArrayList<>();
         
         buttons.add(new Button(300, 100, 200, 400, Color.RED, Color.RED, Color.RED, Main::switchToGameLoop, 10, 10));
         
 
-        return new Page("pause",true, buttons, texts, imageSprites);
+        return new Page("pause",true, buttons, texts, sprites);
     }
 
     /**

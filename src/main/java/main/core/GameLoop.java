@@ -348,7 +348,6 @@ public class GameLoop extends JPanel implements ActionListener {
                     for(Fish possibleFish: possibleFishes){
                         if (random.nextInt(0,10)<possibleFish.getRarity()){
                             fish = possibleFish;
-                            System.out.println(possibleFish.getName());
                             break;
                         }
                     }
@@ -360,7 +359,7 @@ public class GameLoop extends JPanel implements ActionListener {
                     if(fish.getIsAnimationComplete()){
                     isWaitingForFish=false;
                     isReeling=true;
-                    fish = null;
+                    fish.setIsVisible(false);
                     }
                     
                 }
@@ -385,13 +384,14 @@ public class GameLoop extends JPanel implements ActionListener {
                     player.setState("reeling");
                 }
                 if (fishingLine.getIsGameOver()) {
-                    isReeling = false;
-                    isCaught = true;
+                    fish = null;
                     fishingLine = null;
-
+                    isReeling = false;
+    
                 }
             }
             if (isCaught){
+                fishingLine = null;
                 if(player.getState()!="catching"){
                 player.setState("catching");
                 player.refreshAnimation();
@@ -401,6 +401,9 @@ public class GameLoop extends JPanel implements ActionListener {
                     isCaught=false;
                     player.refreshAnimation();
                     player.setAnimationSpeed(5);
+                    System.out.println(fish.getName());
+                    System.out.println(fish.getWeight());
+                    Database.setFishWeight(fish);
                 }
                 
                 
@@ -472,8 +475,9 @@ public class GameLoop extends JPanel implements ActionListener {
             logic.collisionDetection(player, gameData.getFishingSpots());
         }
     }
-        if (fishingLine != null) {
-            fishingLine.setIsGameOver(logic.isColliding(player, fishingLine.getFishingLineFloat()));
+        if (fishingLine != null && isReeling) {
+            isReeling = !(logic.isColliding(player, fishingLine.getFishingLineFloat()));
+            isCaught = !isReeling;
         }
         if(fishingLine!=null && fish!=null){
             if(logic.isColliding(fish,fishingLine.getFishingLineFloat())){

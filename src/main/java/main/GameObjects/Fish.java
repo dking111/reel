@@ -17,9 +17,9 @@ public class Fish extends AnimatedSprite{
     private int rarity;
     private int maxWeight,minWeight, weight;
 
-    public Fish(int x,int y,int w,int h,int maxWeight,int minWeight,String name,int rarity,String path){
+    public Fish(int x,int y,int w,int h,int weight,int maxWeight,int minWeight,String name,int rarity,String path){
         super(x, y, w, h,path,5);
-
+        this.weight = weight;
         this.maxWeight = maxWeight;
         this.minWeight = minWeight;
         this.name = name;

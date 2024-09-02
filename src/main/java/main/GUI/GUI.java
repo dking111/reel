@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import main.Main;
+import main.GameObjects.Sprite;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -119,6 +120,9 @@ public class GUI extends JPanel implements ActionListener {
      * @param pageName The name of the page to be displayed.
      */
     public void setCurrentPage(String pageName) {
+        if (pageName == "shelf"){
+            pageData.refreshShelfPage();
+        }
         currentPage = pageData.getPage(pageName);
     }
 
@@ -161,7 +165,7 @@ public class GUI extends JPanel implements ActionListener {
         }
 
         // Draw other GUI elements on top
-        for (ImageSprite imageSprite : currentPage.getImageSprites()) {
+        for (Sprite imageSprite : currentPage.getSprites()) {
             imageSprite.draw(g2d);
         }
         for (Button button : currentPage.getButtons()) {

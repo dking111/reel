@@ -1,6 +1,9 @@
 package main.GUI;
 
 import javax.swing.*;
+
+import main.GameObjects.Sprite;
+
 import java.awt.*;
 import java.util.List;
 
@@ -13,7 +16,7 @@ public class Page extends JPanel { // Extend JPanel to create a GUI component
     private Boolean transparent;
     private List<Button> buttons;
     private List<Text> texts;
-    private List<ImageSprite> imageSprites;
+    private List<? extends Sprite> sprites;
 
     /**
      * Constructs a Page instance with the specified parameters.
@@ -23,12 +26,12 @@ public class Page extends JPanel { // Extend JPanel to create a GUI component
      * @param texts A list of texts to be displayed on the page.
      * @param imageSprites A list of image sprites to be displayed on the page.
      */
-    public Page(String name,Boolean transparent, List<Button> buttons, List<Text> texts, List<ImageSprite> imageSprites) {
+    public Page(String name,Boolean transparent, List<Button> buttons, List<Text> texts, List<? extends Sprite> sprites ) {
         this.name = name;
         this.transparent = transparent;
         this.buttons = buttons;
         this.texts = texts;
-        this.imageSprites = imageSprites;
+        this.sprites = sprites;
 
         // Make the panel transparent
 
@@ -77,8 +80,8 @@ public class Page extends JPanel { // Extend JPanel to create a GUI component
      * 
      * @return The list of image sprites.
      */
-    public List<ImageSprite> getImageSprites() {
-        return imageSprites;
+    public List<? extends Sprite> getSprites() {
+        return sprites;
     }
 
     /**

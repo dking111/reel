@@ -34,7 +34,7 @@ public class Database {
         ResultSet rs = stmt.executeQuery();
 
         while (rs.next()) {            
-            fishList.add(new Fish(0,0,0,0,rs.getInt("weight_max"),rs.getInt("weight_min"),rs.getString("name"),rs.getInt("rarity"),rs.getString("path")));
+            fishList.add(new Fish(0,0,0,0,rs.getInt("weight"),rs.getInt("weight_max"),rs.getInt("weight_min"),rs.getString("name"),rs.getInt("rarity"),rs.getString("path")));
         }
     } catch (SQLException e) {
         e.printStackTrace();
@@ -43,23 +43,37 @@ public class Database {
 }
 
 
-public static List<Fish> getAllFish(String habitat){
+public static List<Fish> getAllFish(){
     List<Fish> fishList = new ArrayList<Fish>();
-    String sql = "SELECT * FROM fish ORDER BY DESC";
+    String sql = "SELECT * FROM fish ORDER BY type DESC";
 try (Connection conn = Database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-    stmt.setString(1, habitat);
     ResultSet rs = stmt.executeQuery();
 
     while (rs.next()) {            
-        fishList.add(new Fish(0,0,0,0,rs.getInt("weight_max"),rs.getInt("weight_min"),rs.getString("name"),rs.getInt("rarity"),rs.getString("path")));
+        fishList.add(new Fish(100,100,100,100,rs.getInt("weight"),rs.getInt("weight_max"),rs.getInt("weight_min"),rs.getString("name"),rs.getInt("rarity"),rs.getString("path")));
     }
 } catch (SQLException e) {
     e.printStackTrace();
 }
 return fishList;
 }
+
+public static void setFishWeight(Fish fish){
+    String sql = "UPDATE fish SET weight = ? WHERE name = ? AND weight < ?" ;
+try (Connection conn = Database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+    stmt.setInt(1, fish.getWeight());
+    stmt.setString(2, fish.getName());
+    stmt.setInt(3, fish.getWeight());
+    stmt.executeUpdate();
+} catch (SQLException e) {
+    e.printStackTrace();
+}
+}
+
 
 
 }
