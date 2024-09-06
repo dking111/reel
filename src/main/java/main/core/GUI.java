@@ -1,4 +1,4 @@
-package main.GUI;
+package main.core;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +12,13 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import main.Main;
+import main.GUI.Button;
+import main.GUI.Text;
+import main.GUI.Page;
+import main.GUI.PageData;
 import main.GameObjects.Sprite;
+
+
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -44,7 +50,7 @@ public class GUI extends JPanel implements ActionListener {
         this.mainFrame = mainFrame;
         this.pageData = new PageData(this);
         // Set panel properties
-        setPreferredSize(new Dimension(800, 600));
+        setPreferredSize(new Dimension(1920, 1080));
         setBackground(Color.BLACK);
 
         currentPage = pageData.getPage("menu");
@@ -53,8 +59,11 @@ public class GUI extends JPanel implements ActionListener {
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
-                mouseX = e.getX();
-                mouseY = e.getY();
+                double scaleX = 1920.0 / getWidth();  // Original width / current width
+                double scaleY = 1080.0 / getHeight(); // Original height / current height
+        
+                mouseX = (int) (e.getX() * scaleX);
+                mouseY = (int) (e.getY() * scaleY);
             }
         });
 
@@ -157,11 +166,28 @@ public class GUI extends JPanel implements ActionListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        
         Graphics2D g2d = (Graphics2D) g;
+
+        // Calculate the scaling factors for width and height
+        double scaleX = getWidth() / 1920.0;  
+        double scaleY = getHeight() / 1080.0; 
+    
+        // Apply the scaling transformation to the Graphics2D object
+        g2d.scale(scaleX, scaleY);
+
+
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+
+        draw(g2d);
+
+    }
+    public void draw(Graphics2D g2d){
         // Draw the background image if it exists
         if (backgroundImage != null && currentPage.getTransparent()) {
-            g2d.drawImage(backgroundImage, 0, 0, null);
+            
+            g2d.drawImage(backgroundImage, 0, 0, 1920,1080,null);
         }
 
         // Draw other GUI elements on top

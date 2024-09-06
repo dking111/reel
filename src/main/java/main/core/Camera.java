@@ -2,6 +2,7 @@ package main.core;
 
 import java.lang.Math;
 
+import main.Main;
 import main.GameObjects.Player;
 
 /**
@@ -41,16 +42,16 @@ public class Camera {
         }
         float playerRight = player.getX() + player.getW();
         float playerBottom = player.getY() + player.getH();
-        float boundedHeight = gameData.getHeight() * gameData.getCameraBounds();
-        float boundedWidth = gameData.getWidth() * gameData.getCameraBounds();
+        float boundedHeight = Main.getWindowHeight() * gameData.getCameraBounds();
+        float boundedWidth = Main.getWindowWidth() * gameData.getCameraBounds();
 
         // Horizontal camera movement
         if (playerRight > boundedWidth) {
             dx = speedAdjusted(-player.getDx());
             player.setX(Math.round(boundedWidth - player.getW()));
-        } else if (player.getX() < (gameData.getWidth() - boundedWidth)) {
+        } else if (player.getX() < (Main.getWindowWidth() - boundedWidth)) {
             dx = speedAdjusted(-player.getDx());
-            player.setX(Math.round(gameData.getWidth() - boundedWidth));
+            player.setX(Math.round(Main.getWindowWidth() - boundedWidth));
         } else {
             dx = 0;
         }
@@ -59,9 +60,9 @@ public class Camera {
         if (playerBottom > boundedHeight) {
             dy = speedAdjusted(-player.getDy());
             player.setY(Math.round(boundedHeight - player.getH()));
-        } else if (player.getY() < (gameData.getHeight() - boundedHeight)) {
+        } else if (player.getY() < (Main.getWindowHeight() - boundedHeight)) {
             dy = speedAdjusted(-player.getDy());
-            player.setY(Math.round(gameData.getHeight() - boundedHeight));
+            player.setY(Math.round(Main.getWindowHeight() - boundedHeight));
         } else {
             dy = 0;
         }

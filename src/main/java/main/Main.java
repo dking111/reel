@@ -2,8 +2,9 @@ package main;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import main.GUI.GUI;
+
 import main.core.Database;
+import main.core.GUI;
 import main.core.GameLoop;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
@@ -17,14 +18,18 @@ public class Main extends JFrame {
     private GUI gui;
     private GameLoop gameLoop;
     private Database db;
+    private int windowWidth, windowHeight;
+    
     /**
      * Constructs a new {@code Main} window with specified properties.
      * Sets up the window title, size, and other properties, and adds the game panel.
      */
     private Main() {
+        windowWidth = 1920;
+        windowHeight = 1080;
         setTitle("misherfan");
-        setSize(800, 600);
-        setResizable(true); // Make the window resizable to accommodate scaling
+        setSize(windowWidth, windowHeight);
+        setResizable(false); // Make the window resizable to accommodate scaling
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -120,6 +125,24 @@ public class Main extends JFrame {
     public static GUI getGui() {
         return getInstance().gui;
     }
+
+    public static int getWindowWidth() {
+        Main mainInstance = getInstance();
+        return mainInstance.windowWidth;
+    }
+
+    public static int getWindowHeight() {
+        Main mainInstance = getInstance();
+        return mainInstance.windowHeight;
+    }
+
+    public static void setWindowDimentions(int width, int height){
+        Main mainInstance = getInstance();
+        mainInstance.windowWidth = width;
+        mainInstance.windowHeight = height;
+        mainInstance.setSize(width,height);
+
+    }
 }
 
 
@@ -129,4 +152,7 @@ public class Main extends JFrame {
 //enhance gameplay (see discord)
 //sound/music
 //resizeable options (optional)
+//-----Default 1920x1080 then is just shrunk in 16:9 ratio
+
+//bug fish cant be seen on second reel
 //graphics overhaul
