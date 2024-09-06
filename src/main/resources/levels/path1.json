@@ -1,20 +1,18 @@
 {
-    "sprites": [
-      {"x": -50, "y": -50, "w": 850, "h": 50},
-      {"x": -50, "y": -50, "w": 50, "h": 650},
-      {"x": 800, "y": -50, "w": 50, "h": 700},
-      {"x": -50, "y": 600, "w": 850, "h": 50}
+  "sprites": [
+    {"x": -50, "y": -50, "w": 1970, "h": 50},
+    {"x": -50, "y": -50, "w": 50, "h": 1130},
+    {"x": 1920, "y": -50, "w": 50, "h": 1180},
+    {"x": -50, "y": 1080, "w": 1970, "h": 50}
 
-    ],
+  ],
 
     "doors": [
-        {"x": 100, "y": 0, "w": 125, "h": 50,"path":"src\\main\\resources\\levels\\house.json","toX":150,"toY":450},
-        {"x": 750, "y": 200, "w": 50, "h": 200,"path":"src\\main\\resources\\levels\\path.json","toX":51,"toY":300}
+        {"x": 200, "y": 0, "w": 250, "h": 100,"path":"src\\main\\resources\\levels\\house.json","toX":150,"toY":500},
+        {"x": 1820, "y": 400, "w": 100, "h": 250,"path":"src\\main\\resources\\levels\\path.json","toX":51,"toY":300}
 
     ],
     "cameraBounds": 0,
-    "width":800,
-    "height":600,
     "player":"src\\main\\resources\\assets\\player",
     "background":"src\\main\\resources\\assets\\background_path1"
       

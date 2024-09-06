@@ -8,6 +8,7 @@ import main.Main;
 import main.GameObjects.Fish;
 import main.GameObjects.Sprite;
 import main.core.Database;
+import main.core.GUI;
 
 /**
  * Manages and provides access to different pages in the GUI.
@@ -56,7 +57,7 @@ public class PageData {
         List<Sprite> sprites = new ArrayList<>();
 
         
-        buttons.add(new TextButton(275, 475, 200, 50,
+        buttons.add(new TextButton(1920/2-100, 800, 200, 100,
                 new Color(133, 186, 200),                   // Inactive color
                 new Color(165, 208, 222),                   // Hover color
                 new Color(183, 226, 240),                   // Active color
@@ -78,7 +79,7 @@ public class PageData {
                 "src\\main\\resources\\GUI\\settingsIcon.png" // Path to the image file
                 ));
 
-        sprites.add(new ImageSprite(0, 0, 800, 600, "src\\main\\resources\\GUI\\menuBackground.png"));
+        sprites.add(new ImageSprite(0, 0, 1920, 1080, "src\\main\\resources\\GUI\\menuBackground.png"));
 
         return new Page("menu",false, buttons, texts, sprites);
     }
@@ -93,9 +94,9 @@ public class PageData {
         List<Text> texts = new ArrayList<Text>();
         List<Sprite> sprites = new ArrayList<>();
         
-        sprites.add(new ImageSprite(0, 0, 800, 600, "src\\main\\resources\\GUI\\settingsBackground.png"));
+        sprites.add(new ImageSprite(0, 0, 1920, 1080, "src\\main\\resources\\GUI\\settingsBackground.png"));
 
-        texts.add(new Text(300, 100, 30, "Settings", Color.WHITE));
+        texts.add(new Text(1080/2-100, 100, 30, "Settings", Color.WHITE));
 
         buttons.add(new ImageButton(10, 10, 50, 50,
                 new Color(133, 186, 200),                   // Inactive color
@@ -105,6 +106,42 @@ public class PageData {
                 50,                                        // Arc width for rounded corners
                 50,
                 "src\\main\\resources\\GUI\\backIcon.png"   // Path to the image file
+                ));
+
+        buttons.add(new TextButton(1920/2-100, 800, 200, 100,
+                new Color(133, 186, 200),                   // Inactive color
+                new Color(165, 208, 222),                   // Hover color
+                new Color(183, 226, 240),                   // Active color
+                () -> Main.setWindowDimentions(1920, 1080),          // Action using a lambda to pass parameters
+                10,                                        // Arc width for rounded corners
+                10,
+                "1920 x 1080",                                    // Text to display
+                25,                                        // Font size
+                Color.WHITE                                // Text color
+                ));
+
+        buttons.add(new TextButton(1920/2-100, 900, 200, 100,
+                new Color(133, 186, 200),                   // Inactive color
+                new Color(165, 208, 222),                   // Hover color
+                new Color(183, 226, 240),                   // Active color
+                () -> Main.setWindowDimentions(1600, 900),          // Action using a lambda to pass parameters
+                10,                                        // Arc width for rounded corners
+                10,
+                "1600 x 900",                                    // Text to display
+                25,                                        // Font size
+                Color.WHITE                                // Text color
+                ));
+        
+        buttons.add(new TextButton(1920/2-100, 1000, 200, 100,
+                new Color(133, 186, 200),                   // Inactive color
+                new Color(165, 208, 222),                   // Hover color
+                new Color(183, 226, 240),                   // Active color
+                () -> Main.setWindowDimentions(400, 300),          // Action using a lambda to pass parameters
+                10,                                        // Arc width for rounded corners
+                10,
+                "400 x 300",                                    // Text to display
+                25,                                        // Font size
+                Color.WHITE                                // Text color
                 ));
 
         return new Page("settings",false, buttons, texts, sprites);
@@ -120,7 +157,7 @@ public class PageData {
         List<Text> texts = new ArrayList<Text>();
         List<Sprite> sprites = new ArrayList<>();
         
-        sprites.add(new ImageSprite(0, 0, 800, 600, "src\\main\\resources\\GUI\\savesBackground.png"));
+        sprites.add(new ImageSprite(0, 0, 1920, 1080, "src\\main\\resources\\GUI\\savesBackground.png"));
 
         buttons.add(new ImageButton(10, 10, 50, 50,
                 new Color(133, 186, 200),                   // Inactive color
@@ -132,7 +169,7 @@ public class PageData {
                 "src\\main\\resources\\GUI\\backIcon.png"   // Path to the image file
                 ));
 
-        buttons.add(new TextButton(275, 475, 200, 50,
+        buttons.add(new TextButton(1920/2-100, 800, 200, 100,
                 new Color(133, 186, 200),                   // Inactive color
                 new Color(165, 208, 222),                   // Hover color
                 new Color(183, 226, 240),                   // Active color
@@ -157,7 +194,7 @@ public class PageData {
         List<Button> buttons = new ArrayList<Button>();
         List<Text> texts = new ArrayList<Text>();
         List<Sprite> sprites = new ArrayList<>();
-        sprites.add(new ImageSprite(100, 100, 600, 400, "src\\main\\resources\\GUI\\shelf.png"));
+        sprites.add(new ImageSprite(100, 100, 1920/2, 1080/2, "src\\main\\resources\\GUI\\shelf.png"));
         
         List<Fish> allFish = Database.getAllFish();
 

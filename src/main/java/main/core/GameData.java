@@ -18,8 +18,6 @@ public class GameData {
     private List<Sprite> sprites;
     private List<Door> doors;
     private float cameraBounds;
-    private int width;
-    private int height;
     private String background;
     private String player;
     private List<FishingSpot> fishingSpots;
@@ -50,8 +48,6 @@ public class GameData {
             this.sprites = data.sprites;
             this.doors = data.doors;
             this.cameraBounds = data.cameraBounds;
-            this.width = data.width;
-            this.height = data.height;
             this.player = data.player;
             this.background = data.background;
             this.fishingSpots = data.fishingSpots;
@@ -90,23 +86,7 @@ public class GameData {
         return cameraBounds;
     }
 
-    /**
-     * Returns the height of the game world.
-     *
-     * @return The height of the game world in pixels.
-     */
-    public int getHeight() {
-        return height;
-    }
 
-    /**
-     * Returns the width of the game world.
-     *
-     * @return The width of the game world in pixels.
-     */
-    public int getWidth() {
-        return width;
-    }
 
     /**
      * Returns the player information or identifier.

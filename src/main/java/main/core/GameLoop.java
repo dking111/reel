@@ -76,17 +76,17 @@ public class GameLoop extends JPanel implements ActionListener {
     public GameLoop(Main mainFrame) {
         // Set panel properties
         this.mainFrame = mainFrame;
-        setPreferredSize(new Dimension(800, 600));
+        setPreferredSize(new Dimension(1920, 1080));
         setBackground(Color.BLACK);
-        maxSpeed = 5;
+        maxSpeed = 9;
         mouseX = 0;
         mouseY = 0;
         gameData = new GameData("src/main/resources/levels/house.json");
-        player = new Player(350, 400, 100, 100, gameData.getPlayer(), maxSpeed);
+        player = new Player(1920/2-(75), 1080/2-(75), 150, 150, gameData.getPlayer(), maxSpeed);
         logic = new Logic(player, gameData);
         camera = new Camera(logic, gameData, player);
-        background = new Background(0, 0, gameData.getWidth(), gameData.getHeight(), gameData.getBackground());
-        shelf = new Shelf(100,100,100,100);
+        background = new Background(0, 0, 1920, 1080, gameData.getBackground());
+        shelf = new Shelf(1720,0,200,50);
         isFishing = false;
         isCharging = false;
         isCasting = false;
@@ -107,8 +107,12 @@ public class GameLoop extends JPanel implements ActionListener {
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
-                mouseX = e.getX();
-                mouseY = e.getY();
+                double scaleX = 1920.0 / getWidth();  // Original width / current width
+                double scaleY = 1080.0 / getHeight(); // Original height / current height
+        
+                // Convert the current mouse position to the original coordinate system
+                mouseX = (int) (e.getX() * scaleX);
+                mouseY = (int) (e.getY() * scaleY);
             }
         });
 
@@ -117,9 +121,17 @@ public class GameLoop extends JPanel implements ActionListener {
             @Override
             public void mousePressed(MouseEvent e) {
                 isMouseHeld = true;
+
+                if(debug){
+                    System.out.print(mouseX);
+                    System.out.print(" ");
+                    System.out.println(mouseY);
+                }
                 if (isFishing == null) {
                     isFishing = false;
                 }
+
+            
                 int clicked = e.getButton();
                 if (clicked == 1) {
                     if(button!= null)
@@ -248,18 +260,24 @@ public class GameLoop extends JPanel implements ActionListener {
         timer.stop();
 
     }
-
-    /**
-     * Paints the game components onto the panel.
-     * 
-     * @param g The Graphics object used for drawing.
-     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g; // Cast Graphics to Graphics2D
+    
+        // Cast to Graphics2D for more advanced operations
+        Graphics2D g2d = (Graphics2D) g;
+    
+        // Calculate the scaling factors for width and height
+        double scaleX = getWidth() / 1920.0;  
+        double scaleY = getHeight() / 1080.0; 
+    
+        // Apply the scaling transformation to the Graphics2D object
+        g2d.scale(scaleX, scaleY);
+    
+        // Draw all the game components using the scaled Graphics2D object
         draw(g2d);
     }
+    
 
     /**
      * Draws all game components, including the background, player, buttons, and other sprites.
@@ -418,7 +436,7 @@ public class GameLoop extends JPanel implements ActionListener {
             String newPath = door.levelChanged();
             if (newPath != null) {
                 gameData.loadGameData(newPath);
-                player = new Player(door.getToX(), door.getToY(), 100, 100, gameData.getPlayer(), maxSpeed);
+                player = new Player(door.getToX(), door.getToY(),  150, 150, gameData.getPlayer(), maxSpeed);
                 background = new Background(0, 0, background.getW(), background.getH(), gameData.getBackground());
                 logic.setPlayer(player);
                 camera.setPlayer(player);
