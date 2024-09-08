@@ -331,8 +331,8 @@ public class GameLoop extends JPanel implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-
-        
+        if (fish!=null)
+    {System.out.println(fish.getIsVisible());}
         if (isFishing != null) {
             if (isCharging) {
                 if (isMouseHeld && chargeMeter != null) {
@@ -419,9 +419,9 @@ public class GameLoop extends JPanel implements ActionListener {
                     isCaught=false;
                     player.refreshAnimation();
                     player.setAnimationSpeed(5);
-                    System.out.println(fish.getName());
-                    System.out.println(fish.getWeight());
+
                     Database.setFishWeight(fish);
+                    fish=null;
                 }
                 
                 

@@ -32,6 +32,7 @@ public class Player extends AnimatedSprite {
         angle = 0;
         this.maxSpeed = maxSpeed;
         isFishing = false;
+        state = "idle_front";
     }
 
     /**
@@ -42,15 +43,22 @@ public class Player extends AnimatedSprite {
     @Override
     public void draw(Graphics2D g) {
         // Save the original transformation
-        AffineTransform originalTransform = g.getTransform();
+        //AffineTransform originalTransform = g.getTransform();
         angle = calcAngle();
-        rotate(angle, g);
+        //rotate(angle, g);
+
         if(!isFishing)
-        {state = calcState();}
+        {
+            String newState = calcState();
+            if (newState != state){
+                refreshAnimation();
+            }
+            state = newState;
+        }
 
         super.draw(g);
         // Restore the original transformation
-        g.setTransform(originalTransform);
+        //g.setTransform(originalTransform);
     }
 
 
@@ -92,6 +100,16 @@ public class Player extends AnimatedSprite {
 
         if (dx != 0 || dy != 0) {
             newState = "walk";
+        }
+
+        switch (angle) {
+            case 0:
+            newState="idle_back" ; 
+                break;
+            case 180:
+            newState = "idle_front";
+            default:
+                break;
         }
 
         return newState;
