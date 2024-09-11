@@ -108,7 +108,24 @@ public class Player extends AnimatedSprite {
                 break;
             case 180:
             newState = "idle_front";
-            default:
+                break;
+            case 90:
+            newState = "idle_right";
+                break;
+            case 270:
+            newState = "idle_left";
+                break;
+            case 315:
+            newState = "idle_top_left";
+                break;
+            case 45:
+            newState ="idle_top_right";
+                break;
+            case 225:
+            newState = "idle_bottom_left";
+                break;
+            case 135:
+            newState = "idle_bottom_right";
                 break;
         }
 

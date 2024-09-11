@@ -82,7 +82,7 @@ public class GameLoop extends JPanel implements ActionListener {
         mouseX = 0;
         mouseY = 0;
         gameData = new GameData("src/main/resources/levels/house.json");
-        player = new Player(1920/2-(75), 1080/2-(75), 150, 150, gameData.getPlayer(), maxSpeed);
+        player = new Player(1920/2-(75), 1080/2-(75), 250, 250, gameData.getPlayer(), maxSpeed);
         logic = new Logic(player, gameData);
         camera = new Camera(logic, gameData, player);
         background = new Background(0, 0, 1920, 1080, gameData.getBackground());
