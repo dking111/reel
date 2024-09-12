@@ -50,7 +50,7 @@ public class Player extends AnimatedSprite {
         if(!isFishing)
         {
             String newState = calcState();
-            if (newState != state){
+            if (!newState.equals(state)){
                 refreshAnimation();
             }
             state = newState;
@@ -96,40 +96,43 @@ public class Player extends AnimatedSprite {
      * @return The state of the player ("idle" or "walk").
      */
     private String calcState() {
-        String newState = "idle";
 
-        if (dx != 0 || dy != 0) {
-            newState = "walk";
-        }
-
-        switch (angle) {
-            case 0:
-            newState="idle_back" ; 
-                break;
-            case 180:
-            newState = "idle_front";
-                break;
-            case 90:
-            newState = "idle_right";
-                break;
-            case 270:
-            newState = "idle_left";
-                break;
-            case 315:
-            newState = "idle_top_left";
-                break;
-            case 45:
-            newState ="idle_top_right";
-                break;
-            case 225:
-            newState = "idle_bottom_left";
-                break;
-            case 135:
-            newState = "idle_bottom_right";
-                break;
-        }
-
-        return newState;
+            String newState;
+            String prefix = "idle";
+            String suffix = "_front";
+    
+            if (dx != 0 || dy != 0) {
+                prefix = "walk";
+            }
+    
+            switch (angle) {
+                case 0:
+                suffix="_back" ; 
+                    break;
+                case 180:
+                suffix = "_front";
+                    break;
+                case 90:
+                suffix = "_right";
+                    break;
+                case 270:
+                suffix = "_left";
+                    break;
+                case 315:
+                suffix = "_top_left";
+                    break;
+                case 45:
+                suffix ="_top_right";
+                    break;
+                case 225:
+                suffix = "_bottom_left";
+                    break;
+                case 135:
+                suffix = "_bottom_right";
+                    break;
+            }
+            newState = prefix+suffix;
+            return newState;
     }
 
     /**
