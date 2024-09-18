@@ -1,24 +1,24 @@
 {
     "sprites": [
-      {"x": 711, "y": 378, "w": 10, "h": 1000},
-      {"x": 1187, "y": 378, "w": 10, "h": 1000}
+      {"x": 490, "y": 610, "w": 10, "h": 1000},
+      {"x": 1360, "y": 610, "w": 10, "h": 1000}
 
     ],
 
     "doors": [
-      {"x": 711, "y": 1030, "w": 476, "h": 50,"path":"src\\main\\resources\\levels\\path.json","toX":350,"toY":100}
+      {"x": 711, "y": 1030, "w": 476, "h": 50,"path":"src\\main\\resources\\levels\\path_dock.json","toX":350,"toY":100}
 
     ],
 
     "fishingSpots": [
-      {"x": 711, "y": 300, "w": 476, "h": 50}
+      {"x": 490, "y": 350, "w": 870, "h": 40}
     ],
-    "water":{"x": 150, "y": 150, "w": 1520, "h": 300},
-    "cameraBounds": 0.9,
-    "width":800,
-    "height":600,
+    "water":{"x": 200, "y": 50, "w": 1520, "h": 500},
+    "cameraBounds": 0,
+    "playerHeight":250,
+    "playerWidth":250,
     "player":"src\\main\\resources\\assets\\player",
-    "background":"src\\main\\resources\\assets\\background",
+    "background":"src\\main\\resources\\assets\\background_dock",
     "fish":"src\\main\\resources\\assets\\fish",
     "habitat":"Lake"
 

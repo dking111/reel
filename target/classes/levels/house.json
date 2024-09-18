@@ -8,10 +8,17 @@
     ],
 
     "doors": [
-      {"x": 215, "y": 980, "w": 250, "h": 100,"path":"src\\main\\resources\\levels\\path1.json","toX":100,"toY":405}
+      {"x": 215, "y": 1030, "w": 250, "h": 50,"path":"src\\main\\resources\\levels\\path_house.json","toX":241,"toY":60}
 
     ],
+
+    "shelves": [
+      {"x": 563, "y": 0, "w": 317, "h": 5}
+    ],
+
     "cameraBounds": 0,
+    "playerHeight":250,
+    "playerWidth":250,
     "player":"src\\main\\resources\\assets\\player",
     "background":"src\\main\\resources\\assets\\background_house"
       

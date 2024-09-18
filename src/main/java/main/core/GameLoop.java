@@ -63,7 +63,6 @@ public class GameLoop extends JPanel implements ActionListener {
     private Boolean debug;
     private Boolean god;
     private Main mainFrame;
-    private Shelf shelf;
     private java.util.List<Fish> possibleFishes;
     private String currentHabitat;
     private Random random;
@@ -82,11 +81,10 @@ public class GameLoop extends JPanel implements ActionListener {
         mouseX = 0;
         mouseY = 0;
         gameData = new GameData("src/main/resources/levels/house.json");
-        player = new Player(1920/2-(75), 1080/2-(75), 250, 250, gameData.getPlayer(), maxSpeed);
+        player = new Player(1920/2-(75), 1080/2-(75), gameData.getPlayerWidth(), gameData.getPlayerWidth(), gameData.getPlayer(), maxSpeed);
         logic = new Logic(player, gameData);
         camera = new Camera(logic, gameData, player);
         background = new Background(0, 0, 1920, 1080, gameData.getBackground());
-        shelf = new Shelf(1720,0,200,50);
         isFishing = false;
         isCharging = false;
         isCasting = false;
@@ -306,7 +304,12 @@ public class GameLoop extends JPanel implements ActionListener {
         if(gameData.getWater()!=null){
             gameData.getWater().draw(g);
         }
-        shelf.draw(g);
+
+        if(gameData.getShelves()!=null){
+            for(Shelf shelf : gameData.getShelves()){
+                shelf.draw(g);
+            }
+        }
 
         for (Door door : gameData.getDoors()) {
             door.draw(g);
@@ -331,6 +334,7 @@ public class GameLoop extends JPanel implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+    
         if (fish!=null)
     {System.out.println(fish.getIsVisible());}
         if (isFishing != null) {
@@ -427,7 +431,7 @@ public class GameLoop extends JPanel implements ActionListener {
                 
             }
             if (isFishing && !isCaught && !isReeling && !isCasting && !isCharging && !isWaitingForFish){
-                player.setState("idle");
+                player.setState("idle_back");
             }
         }
 
@@ -436,7 +440,7 @@ public class GameLoop extends JPanel implements ActionListener {
             String newPath = door.levelChanged();
             if (newPath != null) {
                 gameData.loadGameData(newPath);
-                player = new Player(door.getToX(), door.getToY(),  150, 150, gameData.getPlayer(), maxSpeed);
+                player = new Player(door.getToX(), door.getToY(),  gameData.getPlayerWidth(), gameData.getPlayerWidth(), gameData.getPlayer(), maxSpeed);
                 background = new Background(0, 0, background.getW(), background.getH(), gameData.getBackground());
                 logic.setPlayer(player);
                 camera.setPlayer(player);
@@ -487,7 +491,12 @@ public class GameLoop extends JPanel implements ActionListener {
         // Check collisions with other sprites
         if(!god){
         logic.collisionDetection(player, gameData.getSprites());
-        logic.collisionDetection(player,shelf ,1);
+
+        if(gameData.getShelves()!=null){
+            for(Shelf shelf : gameData.getShelves()){
+                logic.collisionDetection(player,shelf ,1);
+            }
+        }
         logic.collisionDetection(player, gameData.getDoors());
         if (gameData.getFishingSpots() != null) {
             logic.collisionDetection(player, gameData.getFishingSpots());

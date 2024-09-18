@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 
 import main.GameObjects.Door;
 import main.GameObjects.FishingSpot;
+import main.GameObjects.Shelf;
 import main.GameObjects.Sprite;
 import main.GameObjects.Water;
 
@@ -24,6 +25,8 @@ public class GameData {
     private String fish;
     private Water water;
     private String habitat;
+    private int playerWidth, playerHeight;
+    private List<Shelf> shelves;
 
     /**
      * Constructs a GameData instance and initializes it by loading data from the specified JSON file.
@@ -54,6 +57,9 @@ public class GameData {
             this.fish = data.fish;
             this.water = data.water;
             this.habitat = data.habitat;
+            this.playerWidth = data.playerWidth;
+            this.playerHeight = data.playerHeight;
+            this.shelves = data.shelves;
         } catch (IOException e) {
             e.printStackTrace(); // Print error message
         }
@@ -130,5 +136,15 @@ public class GameData {
 
     public String getHabitat() {
         return habitat;
+    }
+
+    public int getPlayerHeight() {
+        return playerHeight;
+    }
+    public int getPlayerWidth() {
+        return playerWidth;
+    }
+    public List<Shelf> getShelves() {
+        return shelves;
     }
 }
