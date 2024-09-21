@@ -3,13 +3,15 @@
     {"x": -50, "y": -50, "w": 1970, "h": 50},
     {"x": -50, "y": -50, "w": 50, "h": 1130},
     {"x": 1920, "y": -50, "w": 50, "h": 1180},
-    {"x": -50, "y": 1080, "w": 1970, "h": 50}
+    {"x": -50, "y": 1080, "w": 1970, "h": 50},
+    {"x": 525, "y": 292, "w": 214, "h": 198}
 
   ],
 
     "doors": [
         {"x": 200, "y": 0, "w": 250, "h": 50,"path":"src\\main\\resources\\levels\\house.json","toX":227,"toY":775},
-        {"x": 1870, "y": 550, "w": 50, "h": 200,"path":"src\\main\\resources\\levels\\path2.json","toX":80,"toY":550}
+        {"x": 1870, "y": 550, "w": 50, "h": 200,"path":"src\\main\\resources\\levels\\path2.json","toX":80,"toY":550},
+        {"x": 0, "y": 550, "w": 50, "h": 200,"path":"src\\main\\resources\\levels\\pond.json","toX":1650,"toY":550}
 
     ],
     "cameraBounds": 0,

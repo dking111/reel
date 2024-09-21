@@ -96,6 +96,7 @@ public class AnimatedSprite extends Sprite {
                     }
                 }
             }
+            
             dict.put(directory.getName(), animation);
         }
 

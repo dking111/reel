@@ -356,7 +356,7 @@ public class GameLoop extends JPanel implements ActionListener {
                 chargePower = 0;
                 isCasting = false;
                 isWaitingForFish = true;
-                player.setState("idle");
+                player.setState("idle_fishing");
                 player.refreshAnimation();
                 player.setAnimationSpeed(5);
                 }

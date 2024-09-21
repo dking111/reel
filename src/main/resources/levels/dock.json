@@ -6,7 +6,7 @@
     ],
 
     "doors": [
-      {"x": 711, "y": 1030, "w": 476, "h": 50,"path":"src\\main\\resources\\levels\\path_dock.json","toX":350,"toY":100}
+      {"x": 711, "y": 1030, "w": 476, "h": 50,"path":"src\\main\\resources\\levels\\path_dock.json","toX":793,"toY":103}
 
     ],
 
