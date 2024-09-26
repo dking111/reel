@@ -149,10 +149,18 @@ public class Main extends JFrame {
 //to do
 
 //database
-//enhance gameplay (see discord)
+//enhance gameplay (see discord) done
 //sound/music
-//resizeable options (optional)
-//-----Default 1920x1080 then is just shrunk in 16:9 ratio
+//resizeable options (optional) DONE
+//-----Default 1920x1080 then is just shrunk in 16:9 ratio DONE
 
-//bug fish cant be seen on second reel
-//graphics overhaul
+//bug fish cant be seen on second reel DONE
+//graphics overhaul DONE
+
+
+
+//fish graphics
+//changing fish distribution
+//music
+//escape menu and saves menu
+//fancy lighting
