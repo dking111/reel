@@ -2,14 +2,18 @@ package main.core;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.Gson;
 
 import main.GameObjects.Door;
+import main.GameObjects.FireLight;
 import main.GameObjects.FishingSpot;
+import main.GameObjects.Light;
 import main.GameObjects.Shelf;
 import main.GameObjects.Sprite;
 import main.GameObjects.Water;
+import main.GameObjects.WindowLight;
 
 /**
  * Represents the game data, including game objects, dimensions, and configuration settings.
@@ -27,6 +31,9 @@ public class GameData {
     private String habitat;
     private int playerWidth, playerHeight;
     private List<Shelf> shelves;
+    private List<Light> lights;  // List of lights
+    private FireLight fireLight;
+    private WindowLight windowLight;
 
     /**
      * Constructs a GameData instance and initializes it by loading data from the specified JSON file.
@@ -34,6 +41,7 @@ public class GameData {
      * @param filepath The path to the JSON file containing the game data.
      */
     public GameData(String filepath) {
+        //this.lights = new ArrayList<>();
         loadGameData(filepath);
     }
 
@@ -60,6 +68,14 @@ public class GameData {
             this.playerWidth = data.playerWidth;
             this.playerHeight = data.playerHeight;
             this.shelves = data.shelves;
+            this.fireLight = data.fireLight;
+            this.windowLight = data.windowLight;
+
+            // Initialize the lights list to avoid NullPointerException
+            
+
+
+
         } catch (IOException e) {
             e.printStackTrace(); // Print error message
         }
@@ -91,8 +107,6 @@ public class GameData {
     public float getCameraBounds() {
         return cameraBounds;
     }
-
-
 
     /**
      * Returns the player information or identifier.
@@ -130,21 +144,94 @@ public class GameData {
         return fish;
     }
 
-    public Water getWater(){
+    /**
+     * Returns the water object representing water in the game.
+     *
+     * @return The water object.
+     */
+    public Water getWater() {
         return water;
     }
 
+    /**
+     * Returns the habitat information.
+     *
+     * @return The habitat information as a string.
+     */
     public String getHabitat() {
         return habitat;
     }
 
+    /**
+     * Returns the player height in pixels.
+     *
+     * @return The player's height.
+     */
     public int getPlayerHeight() {
         return playerHeight;
     }
+
+    /**
+     * Returns the player width in pixels.
+     *
+     * @return The player's width.
+     */
     public int getPlayerWidth() {
         return playerWidth;
     }
+
+    /**
+     * Returns the list of shelves in the game.
+     *
+     * @return A list of {@link Shelf} objects.
+     */
     public List<Shelf> getShelves() {
         return shelves;
     }
+
+    /**
+     * Returns the FireLight object.
+     *
+     * @return The FireLight object.
+     */
+    public FireLight getFireLight() {
+        return fireLight;
+    }
+
+    /**
+     * Returns the WindowLight object.
+     *
+     * @return The WindowLight object.
+     */
+    public WindowLight getWindowLight() {
+        return windowLight;
+    }
+
+    /**
+     * Returns the list of lights in the game.
+     *
+     * @return A list of {@link Light} objects.
+     */
+    public List<Light> getLights() {
+        // Add the specific lights to the list if they are not null
+        lights = new ArrayList<>();
+        if (getWindowLight() != null) {
+            this.lights.add(getWindowLight());
+        }
+        if (getFireLight() != null) {
+            this.lights.add(getFireLight());
+                    }
+                    System.out.println(this.fireLight);
+        return lights; // Return the pre-populated lights list
+    }
 }
+
+
+
+
+
+
+
+
+
+//FIRELIGHT IS THE ISSUE, why ?!?!?!??!?!?!?!?!?!?!?

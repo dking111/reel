@@ -15,7 +15,8 @@
     "shelves": [
       {"x": 563, "y": 0, "w": 317, "h": 5}
     ],
-
+    "windowLight":{"lightPosX":1076,"lightPosY":93,"radius":300},
+    "fireLight":{"lightPosX":1643,"lightPosY":100,"radius":300},
     "cameraBounds": 0,
     "playerHeight":250,
     "playerWidth":250,

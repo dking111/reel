@@ -7,22 +7,21 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.geom.Arc2D;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Random;
 
-import javax.swing.ImageIcon;
+import java.util.Random;
+//import java.util.List;
+
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import main.Main;
 import main.GUI.Button;
-import main.GameObjects.AnimatedSprite;
 import main.GameObjects.Background;
 import main.GameObjects.ChargeMeter;
+import main.GameObjects.TimeOfDayTint;
+import main.GameObjects.Light;
 import main.GameObjects.Door;
+import main.GameObjects.FireLight;
 import main.GameObjects.Fish;
 import main.GameObjects.FishingLine;
 import main.GameObjects.FishingSpot;
@@ -30,8 +29,8 @@ import main.GameObjects.Player;
 import main.GameObjects.Shelf;
 import main.GameObjects.Sprite;
 import main.GameObjects.Water;
+import main.GameObjects.WindowLight;
 
-import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -73,12 +72,11 @@ public class GameLoop extends JPanel implements ActionListener {
     
     // Day-Night cycle
     private float timeOfDay; // 0.0f = Midnight, 0.5f = Noon, 1.0f = Midnight
-    private float timeSpeed = 0.0f; // Controls the speed of the day-night cycle
+    private float timeSpeed = 0.0001f; // Controls the speed of the day-night cycle
 
-    // Flickering light source variables
-    private float flickerIntensity; // Intensity of the light (1.0f is max)
-    private float flickerBaseIntensity = 0.8f; // Base intensity before flicker
-    private Random flickerRandom;
+    private TimeOfDayTint dayLight;
+    private java.util.List<Light> lights;
+
 
     /**
      * Initializes the game loop by setting up the panel properties, game data, player, camera,
@@ -97,6 +95,8 @@ public class GameLoop extends JPanel implements ActionListener {
         logic = new Logic(player, gameData);
         camera = new Camera(logic, gameData, player);
         background = new Background(0, 0, 1920, 1080, gameData.getBackground());
+        lights = gameData.getLights();
+        System.out.println(lights);
         isFishing = false;
         isCharging = false;
         isCasting = false;
@@ -115,8 +115,7 @@ public class GameLoop extends JPanel implements ActionListener {
 
                 // Day-Night initialization
                 timeOfDay = 0f; // Starting at noon
-                flickerIntensity = flickerBaseIntensity;
-                flickerRandom = new Random();
+                dayLight = new TimeOfDayTint();
         
         // Add mouse motion listener to track mouse position
         addMouseMotionListener(new MouseMotionAdapter() {
@@ -310,11 +309,16 @@ public class GameLoop extends JPanel implements ActionListener {
             fishingLine.draw(g);
         }
         
-        
-        drawFlickeringLight(g);
-        drawFlickeringLight(g);
+        if (lights!=null){
+        for (Light light : lights){
+            light.update(timeOfDay);
+            light.draw(g);
+        }
+    }
+
+
         player.draw(g);
-        applyDayNightTint(g);
+        dayLight.draw(g, timeOfDay);
 
 
 
@@ -368,7 +372,7 @@ public class GameLoop extends JPanel implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        flickerIntensity = flickerBaseIntensity + (flickerRandom.nextFloat() * 0.4f - 0.2f); // Random flickering
+        
         timeOfDay += timeSpeed;
         if (timeOfDay > 1) {
             timeOfDay = 0;
@@ -482,6 +486,7 @@ public class GameLoop extends JPanel implements ActionListener {
                 gameData.loadGameData(newPath);
                 player = new Player(door.getToX(), door.getToY(),  gameData.getPlayerWidth(), gameData.getPlayerWidth(), gameData.getPlayer(), maxSpeed);
                 background = new Background(0, 0, background.getW(), background.getH(), gameData.getBackground());
+                lights = gameData.getLights();
                 logic.setPlayer(player);
                 camera.setPlayer(player);
                 camera.setLogic(logic);
@@ -498,7 +503,7 @@ public class GameLoop extends JPanel implements ActionListener {
                 {player.setIsFishing(isFishing);}
             }
         }
-
+        System.out.println(timeOfDay);
         // Update game state
         if (button != null)
         {button.listener(mouseX, mouseY, false);}
@@ -558,60 +563,9 @@ public class GameLoop extends JPanel implements ActionListener {
         repaint();
     }
 
-    private void applyDayNightTint(Graphics2D g) {
-        // Calculate brightness factor based on the time of day
-        float brightnessFactor = (float) Math.sin(timeOfDay * Math.PI); // 0.0 = darkest, 1.0 = brightest
 
-        // Create a semi-transparent overlay color for day/night effect
-        Color dayColor = new Color(255, 255, 255, 0);  // No tint at noon
-        Color nightColor = new Color(0, 0, 50, 150);   // Dark blue tint at night
 
-        int r = (int) (nightColor.getRed() * (1 - brightnessFactor) + dayColor.getRed() * brightnessFactor);
-        int gC = (int) (nightColor.getGreen() * (1 - brightnessFactor) + dayColor.getGreen() * brightnessFactor);
-        int b = (int) (nightColor.getBlue() * (1 - brightnessFactor) + dayColor.getBlue() * brightnessFactor);
-        int a = (int) (nightColor.getAlpha() * (1 - brightnessFactor) + dayColor.getAlpha() * brightnessFactor);
 
-        Color overlayColor = new Color(r, gC, b, a);
-        g.setColor(overlayColor);
-        g.fillRect(0, 0, 1920, 1080);  // Apply overlay over the entire game screen
-    }
 
-    private void drawFlickeringLight(Graphics2D g) {
-        // Light source position (you can tweak this to be near a fire or torch)
-        Point2D.Float lightPosition = new Point2D.Float(mouseX, mouseY);
-        float radius = 300; // Radius of the light
-    
-        // Adjust color palette to simulate warm, fire-like glow
-        Color[] warmColors = {
-            new Color(255, 160, 50, (int) (255 * flickerIntensity)),  // Bright orange near the fire
-            new Color(255, 100, 20, (int) (150 * flickerIntensity)),  // Darker orange/red fading out
-            new Color(150, 50, 0, 0)                                  // Darker, transparent at the edge
-        };
-    
-        // Define the gradient points for the light
-        float[] fractions = {0.0f, 0.6f, 1.0f};  // 60% of the radius will be brightly lit, fading afterward
-    
-        // Create a radial gradient for a warm light effect
-        RadialGradientPaint rgp = new RadialGradientPaint(
-                lightPosition, radius,
-                fractions, warmColors
-        );
-    
-        // Create a semicircular clipping area to simulate a semicircle
-        Arc2D.Double arc = new Arc2D.Double(
-                lightPosition.getX() - radius, lightPosition.getY() - radius,
-                2 * radius, 2 * radius,
-                200, 140, Arc2D.PIE // Draw only the top half (semicircle)
-        );
-    
-        // Clip the graphics object to this semicircle before drawing
-        g.setClip(arc);
-    
-        // Apply the gradient as a warm light effect
-        g.setPaint(rgp);
-        g.fill(arc);  // Fill the semicircle with the light gradient
-    
-        // Reset the clip so it doesn't affect the rest of the game rendering
-        g.setClip(null);
-    }
+
 }

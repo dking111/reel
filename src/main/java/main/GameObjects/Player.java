@@ -3,6 +3,8 @@ package main.GameObjects;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,10 +57,33 @@ public class Player extends AnimatedSprite {
             }
             state = newState;
         }
-
+        drawShadow(g);
         super.draw(g);
+        
+
         // Restore the original transformation
         //g.setTransform(originalTransform);
+    }
+
+    public void drawShadow(Graphics2D g){
+        float radius = 75;
+        if (this.getW() != 250){
+            radius = 45;
+        }
+        Point2D.Float shadowPosition = new Point2D.Float(this.getX()+this.getW()/2, this.getY()+this.getH()+30);
+
+    
+
+
+            // Create a semicircular clipping area to simulate a semicircle
+            Arc2D.Double arc = new Arc2D.Double(
+                shadowPosition.getX() - radius, shadowPosition.getY() - radius,
+                2 * radius,  radius,
+                0, 360, Arc2D.PIE // Draw only the top half (semicircle)
+        );
+        
+        g.setPaint(new Color(0,0,0,150));
+        g.fill(arc);
     }
 
 
