@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
+import main.GUI.ImageSprite;
+import main.GUI.Trophy;
 import main.GameObjects.Fish;
 
 public class Database {
@@ -26,7 +27,7 @@ public class Database {
 
     public static List<Fish> getAllFishByHabitat(String habitat){
         List<Fish> fishList = new ArrayList<Fish>();
-        String sql = "SELECT * FROM fish WHERE habitat = ? ORDER BY rarity DESC";
+        String sql = "SELECT * FROM fish WHERE habitat = ? OR habitat = 'Both' ORDER BY rarity DESC";
     try (Connection conn = Database.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -34,7 +35,8 @@ public class Database {
         ResultSet rs = stmt.executeQuery();
 
         while (rs.next()) {            
-            fishList.add(new Fish(0,0,0,0,rs.getInt("weight"),rs.getInt("weight_max"),rs.getInt("weight_min"),rs.getString("name"),rs.getInt("rarity"),rs.getString("path")));
+            fishList.add(new Fish(0,0,0,0,rs.getInt("weight"),rs.getInt("weight_max"),rs.getInt("weight_min"),rs.getString("name"),rs.getInt("rarity")));
+            System.out.println(rs.getString("name"));
         }
     } catch (SQLException e) {
         e.printStackTrace();
@@ -43,21 +45,26 @@ public class Database {
 }
 
 
-public static List<Fish> getAllFish(){
-    List<Fish> fishList = new ArrayList<Fish>();
+public static List<Trophy> getAllFish(){
+    List<Trophy> caughtFishList = new ArrayList<Trophy>();
     String sql = "SELECT * FROM fish ORDER BY type DESC";
 try (Connection conn = Database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)) {
 
     ResultSet rs = stmt.executeQuery();
 
-    while (rs.next()) {            
-        fishList.add(new Fish(100,100,100,100,rs.getInt("weight"),rs.getInt("weight_max"),rs.getInt("weight_min"),rs.getString("name"),rs.getInt("rarity"),rs.getString("path")));
+    while (rs.next()) {    
+        if(rs.getInt("weight")==0){        
+        caughtFishList.add(new Trophy(0, 0, 100, 100, rs.getString("path_uncaught"),rs.getString("name"),rs.getInt("weight")));
+        }
+        else{
+            caughtFishList.add(new Trophy(0, 0, 100, 100, rs.getString("path_caught"),rs.getString("name"),rs.getInt("weight")));
+        }
     }
 } catch (SQLException e) {
     e.printStackTrace();
 }
-return fishList;
+return caughtFishList;
 }
 
 public static void setFishWeight(Fish fish){

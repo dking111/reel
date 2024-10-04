@@ -72,7 +72,7 @@ public class GameLoop extends JPanel implements ActionListener {
     
     // Day-Night cycle
     private float timeOfDay; // 0.0f = Midnight, 0.5f = Noon, 1.0f = Midnight
-    private float timeSpeed = 0.0001f; // Controls the speed of the day-night cycle
+    private float timeSpeed = 0.001f; // Controls the speed of the day-night cycle
 
     private TimeOfDayTint dayLight;
     private java.util.List<Light> lights;
@@ -96,7 +96,6 @@ public class GameLoop extends JPanel implements ActionListener {
         camera = new Camera(logic, gameData, player);
         background = new Background(0, 0, 1920, 1080, gameData.getBackground());
         lights = gameData.getLights();
-        System.out.println(lights);
         isFishing = false;
         isCharging = false;
         isCasting = false;
@@ -503,7 +502,6 @@ public class GameLoop extends JPanel implements ActionListener {
                 {player.setIsFishing(isFishing);}
             }
         }
-        System.out.println(timeOfDay);
         // Update game state
         if (button != null)
         {button.listener(mouseX, mouseY, false);}

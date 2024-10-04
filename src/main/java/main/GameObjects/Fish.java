@@ -16,15 +16,15 @@ public class Fish extends AnimatedSprite{
     private String name;
     private int rarity;
     private int maxWeight,minWeight, weight;
+    private static String path = "src\\main\\resources\\assets\\fish";
 
-    public Fish(int x,int y,int w,int h,int weight,int maxWeight,int minWeight,String name,int rarity,String path){
+    public Fish(int x,int y,int w,int h,int weight,int maxWeight,int minWeight,String name,int rarity){
         super(x, y, w, h,path,5);
         this.weight = weight;
         this.maxWeight = maxWeight;
         this.minWeight = minWeight;
         this.name = name;
         this.rarity = rarity;
-        
         isVisible = false;
         random = new Random();
         angle = 0;
@@ -39,7 +39,7 @@ public class Fish extends AnimatedSprite{
         System.out.println(maxWeight);
         this.weight = random.nextInt(minWeight,maxWeight);
         this.w = weight;
-        this.h = weight;
+        this.h = weight*2;
         this.water = water;
         this.fishingLineX = fishingLineX;
         this.fishingLineY = fishingLineY;

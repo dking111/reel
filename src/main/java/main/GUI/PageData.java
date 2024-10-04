@@ -18,7 +18,7 @@ public class PageData {
     private List<Page> pages;
     private Page menuPage;
     private Page settingsPage;
-    private Page savesPage;
+    private Page helpPage;
     private Page shelfPage;
     private Page pausePage;
     private GUI gui;
@@ -33,12 +33,12 @@ public class PageData {
         pages = new ArrayList<Page>();
         menuPage = setMenuPage();
         settingsPage = setSettingsPage();
-        savesPage = setSavesPage();
+        helpPage = setHelpPage();
         shelfPage = setShelfPage();
         pausePage = setPausePage();
         pages.add(menuPage);
         pages.add(settingsPage);
-        pages.add(savesPage);
+        pages.add(helpPage);
         pages.add(shelfPage);
         pages.add(pausePage);
        
@@ -61,7 +61,7 @@ public class PageData {
                 new Color(133, 186, 200),                   // Inactive color
                 new Color(165, 208, 222),                   // Hover color
                 new Color(183, 226, 240),                   // Active color
-                () -> gui.setCurrentPage("saves"),          // Action using a lambda to pass parameters
+                () -> gui.setCurrentPage("help"),          // Action using a lambda to pass parameters
                 10,                                        // Arc width for rounded corners
                 10,
                 "Start",                                    // Text to display
@@ -148,16 +148,16 @@ public class PageData {
     }
 
     /**
-     * Sets up the saves page with buttons, texts, and image sprites.
+     * Sets up the help page with buttons, texts, and image sprites.
      * 
-     * @return The configured saves page.
+     * @return The configured help page.
      */
-    private Page setSavesPage() {
+    private Page setHelpPage() {
         List<Button> buttons = new ArrayList<Button>();
         List<Text> texts = new ArrayList<Text>();
         List<Sprite> sprites = new ArrayList<>();
         
-        sprites.add(new ImageSprite(0, 0, 1920, 1080, "src\\main\\resources\\GUI\\savesBackground.png"));
+        sprites.add(new ImageSprite(0, 0, 1920, 1080, "src\\main\\resources\\GUI\\helpBackground.png"));
 
         buttons.add(new ImageButton(10, 10, 50, 50,
                 new Color(133, 186, 200),                   // Inactive color
@@ -181,7 +181,7 @@ public class PageData {
                 Color.WHITE                                // Text color
                 ));
 
-        return new Page("saves",false, buttons, texts, sprites);
+        return new Page("help",false, buttons, texts, sprites);
     }
 
     public void refreshShelfPage(){
@@ -194,25 +194,21 @@ public class PageData {
         List<Button> buttons = new ArrayList<Button>();
         List<Text> texts = new ArrayList<Text>();
         List<Sprite> sprites = new ArrayList<>();
-        sprites.add(new ImageSprite(100, 100, 1920/2, 1080/2, "src\\main\\resources\\GUI\\shelf.png"));
+        sprites.add(new ImageSprite(100, 100, 1720, 880, "src\\main\\resources\\GUI\\shelf.png"));
         
-        List<Fish> allFish = Database.getAllFish();
+        List<Trophy> allFish = Database.getAllFish();
 
         int column = 0;
         int row = 0;
-        for (Fish fish : allFish){
+        for (Trophy fish : allFish){
             fish.setIsVisible(true);
-            fish.setW(70);
-            fish.setH(70);
-            fish.setX(115+column*100);
-            fish.setY(115+row*100);
-            if(fish.getWeight()==0){
-                fish.setState("uncaught");
-            }
-            else{
-                fish.setState("dead");
+            fish.setW(150);
+            fish.setH(150);
+            fish.setX(255+column*250);
+            fish.setY(170+row*215);
+ 
 
-                buttons.add(new TextButton(115+column*100, 195+row*100, 75, 10,
+                buttons.add(new TextButton(255+column*250, 170+155+row*215, 165, 20,
                      Color.YELLOW,                   // Inactive color
                      Color.YELLOW,                   // Hover color
                      Color.YELLOW,                   // Active color
@@ -220,12 +216,12 @@ public class PageData {
                     0,                                        // Arc width for rounded corners
                     0,
                     String.valueOf(fish.getName()),                                    // Text to display
-                    10,                                        // Font size
+                    20,                                        // Font size
                     Color.BLACK                                // Text color
                     ));
 
 
-                buttons.add(new TextButton(135+column*100, 205+row*100, 30, 10,
+                buttons.add(new TextButton(255+55+column*250, 170+175+row*215, 60, 20,
                      Color.YELLOW,                   // Inactive color
                      Color.YELLOW,                   // Hover color
                      Color.YELLOW,                   // Active color
@@ -233,10 +229,10 @@ public class PageData {
                     0,                                        // Arc width for rounded corners
                     0,
                     String.valueOf(fish.getWeight()) + " lb",                                    // Text to display
-                    10,                                        // Font size
+                    20,                                        // Font size
                     Color.BLACK                                // Text color
                     ));
-            }
+            
             sprites.add(fish);
             column = (column+1)%6;
             if (column==0){
@@ -254,8 +250,11 @@ public class PageData {
         List<Text> texts = new ArrayList<Text>();
         List<Sprite> sprites = new ArrayList<>();
         
-        buttons.add(new Button(300, 100, 200, 400, Color.RED, Color.RED, Color.RED, Main::switchToGameLoop, 10, 10));
-        
+        //buttons.add(new Button(300, 100, 200, 400, Color.RED, Color.RED, Color.RED, Main::switchToGameLoop, 10, 10));
+        sprites.add(new ImageSprite(810, 240, 300, 600, "src\\main\\resources\\GUI\\shelf.png"));
+        buttons.add(new TextButton(825, 270, 270, 125, Color.lightGray, Color.gray, Color.darkGray, Main::switchToGameLoop, 5, 5,"Return",20,Color.white));
+        buttons.add(new TextButton(825, 420, 270, 125, Color.lightGray, Color.gray, Color.darkGray, () -> gui.setCurrentPage("help") ,5, 5,"Help",20,Color.white));
+        buttons.add(new TextButton(825, 570, 270, 125, Color.lightGray, Color.gray, Color.darkGray, () -> gui.setCurrentPage("menu") ,5, 5,"Exit",20,Color.white));
 
         return new Page("pause",true, buttons, texts, sprites);
     }

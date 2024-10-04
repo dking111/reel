@@ -159,8 +159,9 @@ public class Main extends JFrame {
 
 
 
-//fish graphics
-//changing fish distribution
-//music
-//escape menu and saves menu
-//fancy lighting
+//fish graphics DONE
+//changing fish distribution DONE
+//music SCRAPPED
+//escape menu and help menu 
+//fancy lighting DONE
+//refactor code
