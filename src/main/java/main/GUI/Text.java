@@ -43,4 +43,8 @@ public class Text {
         // Draw the string at the specified coordinates (x, y)
         g2d.drawString(text, x, y);
     }
+
+    public void update(){
+        
+    }
 }

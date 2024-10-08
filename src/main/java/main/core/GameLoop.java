@@ -16,6 +16,8 @@ import javax.swing.Timer;
 
 import main.Main;
 import main.GUI.Button;
+import main.GUI.Text;
+import main.GUI.TextTemp;
 import main.GameObjects.Background;
 import main.GameObjects.ChargeMeter;
 import main.GameObjects.TimeOfDayTint;
@@ -30,6 +32,9 @@ import main.GameObjects.Shelf;
 import main.GameObjects.Sprite;
 import main.GameObjects.Water;
 import main.GameObjects.WindowLight;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.awt.*;
 
@@ -66,9 +71,10 @@ public class GameLoop extends JPanel implements ActionListener {
     private Boolean debug;
     private Boolean god;
     private Main mainFrame;
-    private java.util.List<Fish> possibleFishes;
+    private List<Fish> possibleFishes;
     private String currentHabitat;
     private Random random;
+    private List<Text> texts;
     
     // Day-Night cycle
     private float timeOfDay; // 0.0f = Midnight, 0.5f = Noon, 1.0f = Midnight
@@ -96,6 +102,7 @@ public class GameLoop extends JPanel implements ActionListener {
         camera = new Camera(logic, gameData, player);
         background = new Background(0, 0, 1920, 1080, gameData.getBackground());
         lights = gameData.getLights();
+        texts = new ArrayList<>();
         isFishing = false;
         isCharging = false;
         isCasting = false;
@@ -320,7 +327,9 @@ public class GameLoop extends JPanel implements ActionListener {
         dayLight.draw(g, timeOfDay);
 
 
-
+        for(Text text : texts){
+            text.draw(g);
+        }
 
 
         if (chargeMeter != null) {
@@ -372,14 +381,16 @@ public class GameLoop extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         
+        for(Text text :texts){
+            text.update();
+        }
+
         timeOfDay += timeSpeed;
         if (timeOfDay > 1) {
             timeOfDay = 0;
         }
 
-    
-        if (fish!=null)
-    {System.out.println(fish.getIsVisible());}
+
         if (isFishing != null) {
             if (isCharging) {
                 if (isMouseHeld && chargeMeter != null) {
@@ -394,7 +405,7 @@ public class GameLoop extends JPanel implements ActionListener {
 
                 }
                 if (player.getIsAnimationComplete()){
-                fishingLine = new FishingLine((player.getX() + player.getW() / 2), player.getY() - Math.round(chargePower * 100), 15, 15, (player.getX() + player.getW() -15 ), (player.getY() + player.getH() / 4));
+                fishingLine = new FishingLine((player.getX() + player.getW() / 2), player.getY() - Math.round(chargePower * 100), 15, 15, (player.getX() + player.getW()/2 ), (player.getY() + (player.getH()-player.getH()/4 )));
                 fishWaitTimer = (1-chargePower) + 1;
                 chargePower = 0;
                 isCasting = false;
@@ -468,7 +479,10 @@ public class GameLoop extends JPanel implements ActionListener {
                     player.setAnimationSpeed(5);
 
                     Database.setFishWeight(fish);
+                    texts.add(new TextTemp(1920/4,1080/2,100,fish.getName(),Color.white,100));
+                    texts.add(new TextTemp(1920/3,1080/2+100,100,String.valueOf(fish.getWeight())+"lb" ,Color.white,100));
                     fish=null;
+
                 }
                 
                 
