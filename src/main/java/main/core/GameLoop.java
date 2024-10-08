@@ -38,6 +38,7 @@ import java.util.List;
 
 import java.awt.*;
 
+
 /**
  * Manages the main game loop, including rendering, user input, game logic, and updates.
  * It extends JPanel to provide a custom drawing surface and implements ActionListener for timer-based updates.
@@ -75,6 +76,8 @@ public class GameLoop extends JPanel implements ActionListener {
     private String currentHabitat;
     private Random random;
     private List<Text> texts;
+    private FishingLogic fishingLogic;
+    private Renderer renderer;
     
     // Day-Night cycle
     private float timeOfDay; // 0.0f = Midnight, 0.5f = Noon, 1.0f = Midnight
@@ -103,6 +106,8 @@ public class GameLoop extends JPanel implements ActionListener {
         background = new Background(0, 0, 1920, 1080, gameData.getBackground());
         lights = gameData.getLights();
         texts = new ArrayList<>();
+        fishingLogic = new FishingLogic();
+        renderer = new Renderer();
         isFishing = false;
         isCharging = false;
         isCasting = false;
@@ -280,25 +285,23 @@ public class GameLoop extends JPanel implements ActionListener {
         timer.stop();
 
     }
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
+@Override
+public void paintComponent(Graphics g) {
+    super.paintComponent(g);
+    Graphics2D g2d = (Graphics2D) g;
     
-        // Cast to Graphics2D for more advanced operations
-        Graphics2D g2d = (Graphics2D) g;
+    double scaleX = getWidth() / 1920.0;  
+    double scaleY = getHeight() / 1080.0; 
+    g2d.scale(scaleX, scaleY);
     
-        // Calculate the scaling factors for width and height
-        double scaleX = getWidth() / 1920.0;  
-        double scaleY = getHeight() / 1080.0; 
-    
-        // Apply the scaling transformation to the Graphics2D object
-        g2d.scale(scaleX, scaleY);
-    
-        // Draw all the game components using the scaled Graphics2D object
-        draw(g2d);
-
-        
+    // Call the draw method from Renderer
+    renderer.draw(g2d, background, button, fishingLine, lights, player, dayLight, texts, fish, timeOfDay);
+    if (debug) {
+        renderer.drawDebug(g2d, gameData);
     }
+}
+
+
     
 
     /**
@@ -306,71 +309,7 @@ public class GameLoop extends JPanel implements ActionListener {
      * 
      * @param g The Graphics2D object used for drawing.
      */
-    private void draw(Graphics2D g) {
-        
-        background.draw(g);
-        if (button!= null)
-        {button.draw(g);}
-        if (fishingLine != null) {
-            fishingLine.draw(g);
-        }
-        
-        if (lights!=null){
-        for (Light light : lights){
-            light.update(timeOfDay);
-            light.draw(g);
-        }
-    }
 
-
-        player.draw(g);
-        dayLight.draw(g, timeOfDay);
-
-
-        for(Text text : texts){
-            text.draw(g);
-        }
-
-
-        if (chargeMeter != null) {
-            chargeMeter.draw(g);
-        }
-        if (fish!=null){
-            fish.draw(g);
-        }
-        if(debug){
-        if(gameData.getWater()!=null){
-            gameData.getWater().draw(g);
-        }
-
-        if(gameData.getShelves()!=null){
-            for(Shelf shelf : gameData.getShelves()){
-                shelf.draw(g);
-            }
-        }
-
-        for (Door door : gameData.getDoors()) {
-            door.draw(g);
-        }
-        
-        for (Sprite sprite : gameData.getSprites()) {
-            sprite.draw(g);
-        }
-        if (gameData.getFishingSpots() != null) {
-            for (FishingSpot fishingSpot : gameData.getFishingSpots()) {
-                fishingSpot.draw(g);
-            }
-        }
-        
-    }
-
-
-
-
-
-
-
-    }
 
     /**
      * Handles timer-based updates for the game, including player movement, camera adjustments,
@@ -391,106 +330,7 @@ public class GameLoop extends JPanel implements ActionListener {
         }
 
 
-        if (isFishing != null) {
-            if (isCharging) {
-                if (isMouseHeld && chargeMeter != null) {
-                    chargeMeter.increaseCharge();
-                }
-            }
-            if (isCasting) {
-                if(player.getState()!="casting"){
-                    player.setState("casting");
-                    player.refreshAnimation();
-                    player.setAnimationSpeed(10);
-
-                }
-                if (player.getIsAnimationComplete()){
-                fishingLine = new FishingLine((player.getX() + player.getW() / 2), player.getY() - Math.round(chargePower * 100), 15, 15, (player.getX() + player.getW()/2 ), (player.getY() + (player.getH()-player.getH()/4 )));
-                fishWaitTimer = (1-chargePower) + 1;
-                chargePower = 0;
-                isCasting = false;
-                isWaitingForFish = true;
-                player.setState("idle_fishing");
-                player.refreshAnimation();
-                player.setAnimationSpeed(5);
-                }
-            }
-            if (isWaitingForFish){
-                fishWaitTimer-=0.01;
-                if(fishWaitTimer<=0){
-                    fishWaitTimer=0;
-                if (fish==null){
-                    while(fish==null){
-                    for(Fish possibleFish: possibleFishes){
-                        if (random.nextInt(0,10)<possibleFish.getRarity()){
-                            fish = possibleFish;
-                            break;
-                        }
-                    }
-                    }
-                    fish.spawn(gameData.getWater(),fishingLine.getFishingLineFloat().getX(), fishingLine.getFishingLineFloat().getY());
-                }
-            
-                if(fish.getHooked()){
-                    if(fish.getIsAnimationComplete()){
-                    isWaitingForFish=false;
-                    isReeling=true;
-                    fish.setIsVisible(false);
-                    }
-                    
-                }
-                else{
-                    fish.update(fishingLine.getFishingLineFloat().getX(),fishingLine.getFishingLineFloat().getY());
-                }
-            }
-
-            }
-
-            if (isReeling) {
-                
-                fishingLine.update(isLeftHeld, isRightHeld, isMouseHeld);
-
-                if (isLeftHeld && !isRightHeld){
-                    player.setState("reelingLeft");
-                }
-                else if (isRightHeld && !isLeftHeld){
-                    player.setState("reelingRight");
-                }
-                else{
-                    player.setState("reeling");
-                }
-                if (fishingLine.getIsGameOver()) {
-                    fish = null;
-                    fishingLine = null;
-                    isReeling = false;
-    
-                }
-            }
-            if (isCaught){
-                fishingLine = null;
-                if(player.getState()!="catching"){
-                player.setState("catching");
-                player.refreshAnimation();
-                player.setAnimationSpeed(10);
-                }
-                if(player.getIsAnimationComplete()){
-                    isCaught=false;
-                    player.refreshAnimation();
-                    player.setAnimationSpeed(5);
-
-                    Database.setFishWeight(fish);
-                    texts.add(new TextTemp(1920/4,1080/2,100,fish.getName(),Color.white,100));
-                    texts.add(new TextTemp(1920/3,1080/2+100,100,String.valueOf(fish.getWeight())+"lb" ,Color.white,100));
-                    fish=null;
-
-                }
-                
-                
-            }
-            if (isFishing && !isCaught && !isReeling && !isCasting && !isCharging && !isWaitingForFish){
-                player.setState("idle_back");
-            }
-        }
+        fishingLogic.update(isMouseHeld,isLeftHeld,isRightHeld,chargeMeter,player,fishingLine,fishWaitTimer,chargePower,fish,gameData,possibleFishes,texts);
 
         // Check if level has changed and reload data if necessary
         for (Door door : gameData.getDoors()) {
