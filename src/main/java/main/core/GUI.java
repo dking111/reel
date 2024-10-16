@@ -148,6 +148,7 @@ public class GUI extends JPanel implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+        System.out.println("running");
         // Perform periodic updates
         for (Button button : currentPage.getButtons()) {
             button.listener(mouseX, mouseY, false);

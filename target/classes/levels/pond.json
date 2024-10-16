@@ -26,7 +26,7 @@
     "fishingSpots": [
       {"x": 759, "y": 600, "w": 230, "h": 50}
     ],
-    "water":{"x": 504, "y": 333, "w": 844, "h": 388},
+    "water":{"x": 504, "y": 350, "w": 844, "h": 380},
     "cameraBounds": 0,
     "playerHeight":150,
     "playerWidth":150,

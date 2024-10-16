@@ -9,7 +9,7 @@ import java.util.Random;
  * The fish has properties such as weight, rarity, and visibility.
  */
 public class Fish extends AnimatedSprite {
-    private static final String ASSET_PATH = "src\\main\\resources\\assets\\fish"; 
+    private static final String ASSET_PATH = "assets\\fish"; 
     private static final int DEFAULT_SPEED = 5; 
 
     private Random random; 
@@ -156,6 +156,15 @@ public class Fish extends AnimatedSprite {
      */
     public int getWeight() {
         return weight;
+    }
+
+    /**
+     * Sets the weight of the fish.
+     *
+     * @param weight The weight of the fish.
+     */
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 
     /**

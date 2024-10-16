@@ -12,13 +12,13 @@ import java.util.Random;
 public class FishingLine extends Sprite {
     
     private static final int MIN_STRUGGLES_BEFORE_REST = 2;
-    private static final int MAX_STRUGGLES_BEFORE_REST = 3;
+    private static final int MAX_STRUGGLES_BEFORE_REST = 6;
     private static final int MIN_MAX_FISH_SPEED = 4;
     private static final int MAX_MAX_FISH_SPEED = 6;
     private static final int MIN_AMPLITUDE = 150;
     private static final int MAX_AMPLITUDE = 400;
     private static final int MAX_TENSION = 70;
-    private static final int REST_DURATION = 60;
+    private static final int REST_DURATION = 40;
     
     private int playerX, playerY;
     private Random random;

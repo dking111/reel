@@ -22,9 +22,8 @@ public class Renderer {
     }
     public void draw(Graphics2D g , FishingLine fishingLine,
                       Player player,
-                     List<Text> texts, Fish fish, float timeOfDay,ChargeMeter chargeMeter,GameData gameData) {
+                     List<Text> texts, Fish fish, float timeOfDay,ChargeMeter chargeMeter,GameData gameData,Background background) {
 
-        Background background = new Background(0, 0, 1920, 1080, gameData.getBackground());
         List<Light> lights = gameData.getLights();
 
         

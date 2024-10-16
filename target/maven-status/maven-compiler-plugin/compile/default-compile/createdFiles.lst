@@ -15,12 +15,14 @@ main\core\GUI$3.class
 main\core\FishingState.class
 main\GameObjects\Water.class
 main\GameObjects\Sprite.class
+main\core\FishingLogic$1.class
 main\core\GUI.class
 main\GameObjects\TimeOfDayTint.class
 main\GUI\ImageButton.class
 main\GameObjects\FishingLine.class
 main\core\Database.class
 main\core\GUI$1.class
+main\GUI\PageData$Constants.class
 main\GameObjects\Shelf.class
 main\Main.class
 main\core\FishingLogic.class

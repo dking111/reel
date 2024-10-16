@@ -41,10 +41,9 @@ public class Sprite {
      * @param g The {@code Graphics2D} context on which to draw the sprite.
      */
     public void draw(Graphics2D g) {
-        if (isVisible) {
             g.setColor(DEFAULT_COLOR);   
             g.fillRect(x, y, w, h);      
-        }
+        
     }
 
     /**
