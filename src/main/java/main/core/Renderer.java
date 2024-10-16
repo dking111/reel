@@ -1,10 +1,9 @@
 package main.core;
 
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import main.GameObjects.Background;
+import main.GameObjects.ChargeMeter;
 import main.GameObjects.Door;
-import main.GUI.Button;
 import main.GameObjects.Player;
 import main.GameObjects.Shelf;
 import main.GameObjects.Sprite;
@@ -17,15 +16,20 @@ import main.GameObjects.TimeOfDayTint;
 import java.util.List;
 
 public class Renderer {
+    private TimeOfDayTint dayLight;
+    public Renderer(){
+        dayLight = new TimeOfDayTint();
+    }
+    public void draw(Graphics2D g , FishingLine fishingLine,
+                      Player player,
+                     List<Text> texts, Fish fish, float timeOfDay,ChargeMeter chargeMeter,GameData gameData) {
 
-    public void draw(Graphics2D g, Background background, Button button, FishingLine fishingLine,
-                     List<Light> lights, Player player, TimeOfDayTint dayLight,
-                     List<Text> texts, Fish fish, float timeOfDay) {
-        background.draw(g);
+        Background background = new Background(0, 0, 1920, 1080, gameData.getBackground());
+        List<Light> lights = gameData.getLights();
+
         
-        if (button != null) {
-            button.draw(g);
-        }
+        background.draw(g);
+
 
         if (fishingLine != null) {
             fishingLine.draw(g);
@@ -34,9 +38,12 @@ public class Renderer {
         if (lights != null) {
             for (Light light : lights) {
                 light.draw(g);
+                light.update(timeOfDay);
             }
         }
-
+        if(chargeMeter != null){
+            chargeMeter.draw(g);
+        }
         player.draw(g);
         dayLight.draw(g,timeOfDay);
 

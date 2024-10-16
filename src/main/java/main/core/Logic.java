@@ -3,7 +3,6 @@ package main.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import main.GameObjects.Player;
 import main.GameObjects.Sprite;
 
 /**
@@ -11,22 +10,10 @@ import main.GameObjects.Sprite;
  * It manages interactions between the player and other game objects.
  */
 public class Logic {
-    private Player player;
-    private GameData gameData;
-
-    /**
-     * Initializes the game logic with the given player and game data.
-     * 
-     * @param player The player object to be managed.
-     * @param gameData The game data containing the game's state and objects.
-     */
-    public Logic(Player player, GameData gameData) {
-        this.player = player;
-        this.gameData = gameData;
-    }
 
     /**
      * Checks for collisions between the player and a single sprite.
+     * This method delegates to the method that handles collisions with a list of sprites.
      * 
      * @param player The player object to check for collisions.
      * @param sprite The sprite object to check for collisions with the player.
@@ -37,10 +24,18 @@ public class Logic {
         collisionDetection(player, spriteList);
     }
 
+    /**
+     * Checks for collisions between the player and a single sprite, with a clearance value to adjust collision handling.
+     * This method delegates to the method that handles collisions with a list of sprites.
+     * 
+     * @param player The player object to check for collisions.
+     * @param sprite The sprite object to check for collisions with the player.
+     * @param clearance The clearance value to adjust collision handling.
+     */
     public void collisionDetection(Sprite player, Sprite sprite, Integer clearance) {
         List<Sprite> spriteList = new ArrayList<>();
         spriteList.add(sprite);
-        collisionDetection(player, spriteList,clearance);
+        collisionDetection(player, spriteList, clearance);
     }
 
     /**
@@ -54,8 +49,7 @@ public class Logic {
     }
 
     /**
-     * Checks for collisions between the player and a list of sprites,
-     * with a specified clearance value to adjust collision handling.
+     * Checks for collisions between the player and a list of sprites, with a specified clearance value.
      * 
      * @param player The player object to check for collisions.
      * @param sprites The list of sprite objects to check for collisions with the player.
@@ -85,8 +79,8 @@ public class Logic {
     }
 
     /**
-     * Handles the collision response by adjusting the player's position
-     * to prevent overlap with the sprite, considering a clearance value.
+     * Handles the collision response by adjusting the player's position to prevent overlap with the sprite.
+     * The player's new position is calculated based on the overlap and clearance value.
      * 
      * @param player The player object involved in the collision.
      * @param sprite The sprite object involved in the collision.
@@ -96,6 +90,7 @@ public class Logic {
         int overlapX = Math.min(player.getX() + player.getW() - sprite.getX(), sprite.getX() + sprite.getW() - player.getX());
         int overlapY = Math.min(player.getY() + player.getH() - sprite.getY(), sprite.getY() + sprite.getH() - player.getY());
 
+        // Determine which dimension (X or Y) has less overlap, and adjust the player's position accordingly
         if (overlapX < overlapY) {
             if (player.getX() < sprite.getX()) {
                 player.setX(sprite.getX() - (player.getW() + clearance)); // Move player to the left of the sprite
@@ -109,30 +104,23 @@ public class Logic {
                 player.setY(sprite.getY() + (sprite.getH() + clearance)); // Move player below the sprite
             }
         }
-        //resets speed to prevent running into object again
+        // Reset the player's speed to prevent continuous collision
         player.setDx(0);
         player.setDy(0);
-        
     }
-
-
-    public boolean isContaining(Sprite sprite1,Sprite sprite2){
-        return (sprite1.getX() <= sprite2.getX()                                    &&
-                sprite1.getX() + sprite1.getW() >= sprite2.getX() + sprite2.getW()  &&
-                sprite1.getY() <= sprite2.getY()                                    &&
-                sprite1.getY() + sprite1.getH() >= sprite2.getY() + sprite2.getH());
-
-        
-    }
-
-
 
     /**
-     * Sets a new player object for the logic to manage.
+     * Checks if one sprite completely contains another sprite.
+     * This can be useful for certain game logic, such as determining if one object is within another.
      * 
-     * @param player The new player object.
+     * @param sprite1 The first sprite (the container) to check.
+     * @param sprite2 The second sprite (the contained) to check.
+     * @return True if sprite1 contains sprite2, otherwise false.
      */
-    public void setPlayer(Player player) {
-        this.player = player;
+    public boolean isContaining(Sprite sprite1, Sprite sprite2) {
+        return (sprite1.getX() <= sprite2.getX() &&
+                sprite1.getX() + sprite1.getW() >= sprite2.getX() + sprite2.getW() &&
+                sprite1.getY() <= sprite2.getY() &&
+                sprite1.getY() + sprite1.getH() >= sprite2.getY() + sprite2.getH());
     }
 }

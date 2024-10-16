@@ -1,6 +1,5 @@
 package main.GameObjects;
 
-import java.awt.*;
 
 /**
  * Represents a background image in the game.

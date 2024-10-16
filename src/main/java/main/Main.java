@@ -36,7 +36,7 @@ public class Main extends JFrame {
         //db
         db = new Database();
         // Initialize panels
-        gui = new GUI(this);
+        gui = new GUI();
         gameLoop = new GameLoop(this);
         gameLoop.timerStop();
 

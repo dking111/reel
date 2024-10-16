@@ -13,7 +13,6 @@ public class Camera {
     private GameData gameData;
     private Player player;
     private int dx, dy;
-    private Logic logic;
 
     /**
      * Constructs a Camera instance with the specified parameters.
@@ -22,8 +21,7 @@ public class Camera {
      * @param gameData The game data providing information about the game world dimensions.
      * @param player The player whose movement the camera follows.
      */
-    public Camera(Logic logic, GameData gameData, Player player) {
-        this.logic = logic;
+    public Camera(GameData gameData, Player player) {
         this.gameData = gameData;
         this.player = player;
         dx = 0;
@@ -114,14 +112,5 @@ public class Camera {
      */
     public void setPlayer(Player player) {
         this.player = player;
-    }
-
-    /**
-     * Sets a new logic instance for managing camera-related decisions.
-     *
-     * @param logic The new logic instance.
-     */
-    public void setLogic(Logic logic) {
-        this.logic = logic;
     }
 }

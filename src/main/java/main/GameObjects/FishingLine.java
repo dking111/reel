@@ -10,8 +10,17 @@ import java.util.Random;
  * The fishing line's behavior changes based on user input and its state relative to the player.
  */
 public class FishingLine extends Sprite {
+    
+    private static final int MIN_STRUGGLES_BEFORE_REST = 2;
+    private static final int MAX_STRUGGLES_BEFORE_REST = 3;
+    private static final int MIN_MAX_FISH_SPEED = 4;
+    private static final int MAX_MAX_FISH_SPEED = 6;
+    private static final int MIN_AMPLITUDE = 150;
+    private static final int MAX_AMPLITUDE = 400;
+    private static final int MAX_TENSION = 70;
+    private static final int REST_DURATION = 60;
+    
     private int playerX, playerY;
-    private int frameCounter;
     private Random random;
     private Sprite fishingLineFloat;
     private Boolean isGameOver;
@@ -19,7 +28,7 @@ public class FishingLine extends Sprite {
     private int maxFishSpeed;
     private int tension;
     private int struggleCounter;
-    private int maxStruggle;
+    private int maxStruggles;
     private int strugglesBeforeRest;
     private int restCounter;
     private int reelSpeed;
@@ -38,15 +47,14 @@ public class FishingLine extends Sprite {
         super(x, y, w, h);
         this.playerX = playerX;
         this.playerY = playerY;
-        this.frameCounter = 0;
         random = new Random();
-        
-        strugglesBeforeRest = random.nextInt(2, 3);
-        maxStruggle = random.nextInt(4, 10);
+
+        strugglesBeforeRest = random.nextInt(MIN_STRUGGLES_BEFORE_REST, MAX_STRUGGLES_BEFORE_REST);
+        maxStruggles = random.nextInt(4, 10);
         struggleCounter = 0;
-        maxFishSpeed = random.nextInt(4, 6);
+        maxFishSpeed = random.nextInt(MIN_MAX_FISH_SPEED, MAX_MAX_FISH_SPEED);
         dx = random.nextInt(1, 5);
-        amplitude = random.nextInt(150, 400);
+        amplitude = random.nextInt(MIN_AMPLITUDE, MAX_AMPLITUDE);
         fishingLineFloat = new Sprite(x, y, w, h);
         isGameOver = false;
         tension = 0;
@@ -61,27 +69,23 @@ public class FishingLine extends Sprite {
      */
     @Override
     public void draw(Graphics2D g) {
-        // Draw the fishing line
-        g.setColor(Color.RED); 
+        g.setColor(Color.RED);
         g.fillRect(x, y, w, h);
 
-        // Set color based on tension
         if (tension < 10) {
-            g.setColor(Color.WHITE);   
+            g.setColor(Color.WHITE);
         } else if (tension < 30) {
             g.setColor(Color.ORANGE);
-        } else if (tension < 70) {
+        } else if (tension < MAX_TENSION) {
             g.setColor(Color.RED);
         } else {
             isGameOver = true;
         }
 
-        // Draw the rest state if applicable
         if (restCounter != 0) {
             g.setColor(new Color(136, 236, 136));
         }
 
-        // Draw the fishing line to the player
         g.setStroke(new BasicStroke(5));
         g.drawLine(x + w / 2, y + h / 2, playerX, playerY);
     }
@@ -96,20 +100,13 @@ public class FishingLine extends Sprite {
     public void update(Boolean isLeftHeld, Boolean isRightHeld, Boolean isMouseHeld) {
         setFishingLineFloat(x, y);
 
-        // Handle the rest state when the fishing line is resting
         if (restCounter > 0) {
             handleRestState(isMouseHeld);
             return;
         }
 
-        // Update tension and direction based on user input
         updateTensionAndDirection(isLeftHeld, isRightHeld);
-
-        // Move the fishing line based on the current dx value
         move(dx, 0);
-
-        // Increment the frame counter
-        frameCounter++;
     }
 
     /**
@@ -126,9 +123,8 @@ public class FishingLine extends Sprite {
         }
 
         if (restCounter == 0) {
-            // Resume moving with the appropriate speed
             dx = (dx < 0) ? -maxFishSpeed : maxFishSpeed;
-            strugglesBeforeRest = random.nextInt(2, 3);
+            strugglesBeforeRest = random.nextInt(MIN_STRUGGLES_BEFORE_REST, MAX_STRUGGLES_BEFORE_REST);
         }
     }
 
@@ -193,7 +189,7 @@ public class FishingLine extends Sprite {
      * @param resetDx The value to reset dx after a struggle.
      */
     private void handleStruggle(int moveAmount, int resetDx) {
-        if (struggleCounter != maxStruggle) {
+        if (struggleCounter != maxStruggles) {
             move(moveAmount, 0);
             dx = resetDx;
             struggleCounter++;
@@ -201,7 +197,7 @@ public class FishingLine extends Sprite {
             strugglesBeforeRest--;
             if (strugglesBeforeRest == 0) {
                 dx = -resetDx;
-                restCounter = 60;
+                restCounter = REST_DURATION;
             }
         }
     }

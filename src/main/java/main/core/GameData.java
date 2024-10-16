@@ -41,7 +41,6 @@ public class GameData {
      * @param filepath The path to the JSON file containing the game data.
      */
     public GameData(String filepath) {
-        //this.lights = new ArrayList<>();
         loadGameData(filepath);
     }
 
@@ -72,10 +71,6 @@ public class GameData {
             this.windowLight = data.windowLight;
 
             // Initialize the lights list to avoid NullPointerException
-            
-
-
-
         } catch (IOException e) {
             e.printStackTrace(); // Print error message
         }
@@ -136,7 +131,7 @@ public class GameData {
     }
 
     /**
-     * Returns the path of the fish
+     * Returns the path of the fish.
      *
      * @return The fish resource path as a string.
      */
@@ -190,7 +185,7 @@ public class GameData {
     }
 
     /**
-     * Returns the FireLight object.
+     * Returns the FireLight object representing a fire light in the game.
      *
      * @return The FireLight object.
      */
@@ -199,7 +194,7 @@ public class GameData {
     }
 
     /**
-     * Returns the WindowLight object.
+     * Returns the WindowLight object representing a window light in the game.
      *
      * @return The WindowLight object.
      */
@@ -208,30 +203,18 @@ public class GameData {
     }
 
     /**
-     * Returns the list of lights in the game.
+     * Returns the list of lights in the game. This list includes both window and fire lights if they exist.
      *
      * @return A list of {@link Light} objects.
      */
     public List<Light> getLights() {
-        // Add the specific lights to the list if they are not null
         lights = new ArrayList<>();
         if (getWindowLight() != null) {
             this.lights.add(getWindowLight());
         }
         if (getFireLight() != null) {
             this.lights.add(getFireLight());
-                    }
-                    System.out.println(this.fireLight);
-        return lights; // Return the pre-populated lights list
+        }
+        return lights; 
     }
 }
-
-
-
-
-
-
-
-
-
-//FIRELIGHT IS THE ISSUE, why ?!?!?!??!?!?!?!?!?!?!?

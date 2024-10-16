@@ -39,8 +39,6 @@ public class Text {
     public void draw(Graphics2D g2d) {
         g2d.setFont(new Font("Arial", Font.BOLD, fontSize));
         g2d.setColor(color);
-
-        // Draw the string at the specified coordinates (x, y)
         g2d.drawString(text, x, y);
     }
 

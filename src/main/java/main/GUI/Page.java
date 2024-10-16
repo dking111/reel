@@ -11,7 +11,7 @@ import java.util.List;
  * Represents a page in the GUI that contains various graphical elements.
  * A page consists of buttons, texts, and image sprites.
  */
-public class Page extends JPanel { // Extend JPanel to create a GUI component
+public class Page extends JPanel { 
     private String name;
     private Boolean transparent;
     private List<Button> buttons;
@@ -33,10 +33,6 @@ public class Page extends JPanel { // Extend JPanel to create a GUI component
         this.texts = texts;
         this.sprites = sprites;
 
-        // Make the panel transparent
-
-
-        // Add components to the panel
     }
 
 
@@ -48,9 +44,7 @@ public class Page extends JPanel { // Extend JPanel to create a GUI component
      */
     @Override
     protected void paintComponent(Graphics g) {
-        // Custom painting code here if needed
-        super.paintComponent(g); // Ensure the panel itself is painted correctly
-        // You can draw your custom graphics here if needed
+        super.paintComponent(g); 
     }
 
     /**
