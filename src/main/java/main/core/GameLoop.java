@@ -1,5 +1,9 @@
 package main.core;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -8,81 +12,62 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
-import java.util.Random;
-//import java.util.List;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import main.Main;
-import main.GUI.Button;
 import main.GUI.Text;
-import main.GUI.TextTemp;
 import main.GameObjects.Background;
 import main.GameObjects.ChargeMeter;
-import main.GameObjects.TimeOfDayTint;
-import main.GameObjects.Light;
 import main.GameObjects.Door;
-import main.GameObjects.FireLight;
 import main.GameObjects.Fish;
-import main.GameObjects.FishingLine;
 import main.GameObjects.FishingSpot;
 import main.GameObjects.Player;
 import main.GameObjects.Shelf;
 import main.GameObjects.Sprite;
 import main.GameObjects.Water;
-import main.GameObjects.WindowLight;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import java.awt.*;
 
 /**
  * Manages the main game loop, including rendering, user input, game logic, and updates.
  * It extends JPanel to provide a custom drawing surface and implements ActionListener for timer-based updates.
  */
 public class GameLoop extends JPanel implements ActionListener {
+    // Constants
+    private final int MAXSPEED = 9;
+    private final float TIMESPEED = 0.001f;
 
+    // Core components
     private Timer timer;
     private Logic logic;
     private Camera camera;
     private Player player;
     private GameData gameData;
-    private int maxSpeed;
     private Background background;
-    private Button button;
+    private Renderer renderer;
+    private FishingLogic fishingLogic;
+
+    // Event listener
     private int mouseX, mouseY;
-    private Boolean isFishing;
-    private Boolean isCharging;
-    private Boolean isCasting;
-    private Boolean isWaitingForFish;
-    private float fishWaitTimer;
-    private Fish fish;
-    private Boolean isReeling;
-    private Boolean isCaught;
     private Boolean isMouseHeld;
     private Boolean isLeftHeld;
     private Boolean isRightHeld;
+
+    // Game objects
     private ChargeMeter chargeMeter;
     private float chargePower;
-    private FishingLine fishingLine;
     private Water water;
-    private Boolean debug;
-    private Boolean god;
-    private Main mainFrame;
     private List<Fish> possibleFishes;
     private String currentHabitat;
-    private Random random;
+    private FishingState fishingState;
     private List<Text> texts;
-    
-    // Day-Night cycle
-    private float timeOfDay; // 0.0f = Midnight, 0.5f = Noon, 1.0f = Midnight
-    private float timeSpeed = 0.001f; // Controls the speed of the day-night cycle
+    private float timeOfDay;
 
-    private TimeOfDayTint dayLight;
-    private java.util.List<Light> lights;
-
+    // Debugging
+    private Boolean debug;
+    private Boolean god;
 
     /**
      * Initializes the game loop by setting up the panel properties, game data, player, camera,
@@ -90,286 +75,80 @@ public class GameLoop extends JPanel implements ActionListener {
      */
     public GameLoop(Main mainFrame) {
         // Set panel properties
-        this.mainFrame = mainFrame;
         setPreferredSize(new Dimension(1920, 1080));
         setBackground(Color.BLACK);
-        maxSpeed = 9;
+
+        // Core components
+        gameData = new GameData("src/main/resources/levels/house.json");
+        player = new Player(1920 / 2 - 75, 1080 / 2 - 75, gameData.getPlayerWidth(), gameData.getPlayerWidth(), gameData.getPlayer(), MAXSPEED);
+        logic = new Logic();
+        camera = new Camera(gameData, player);
+        texts = new ArrayList<>();
+        fishingLogic = new FishingLogic();
+        renderer = new Renderer();
+
+        // Event listening
         mouseX = 0;
         mouseY = 0;
-        gameData = new GameData("src/main/resources/levels/house.json");
-        player = new Player(1920/2-(75), 1080/2-(75), gameData.getPlayerWidth(), gameData.getPlayerWidth(), gameData.getPlayer(), maxSpeed);
-        logic = new Logic(player, gameData);
-        camera = new Camera(logic, gameData, player);
-        background = new Background(0, 0, 1920, 1080, gameData.getBackground());
-        lights = gameData.getLights();
-        texts = new ArrayList<>();
-        isFishing = false;
-        isCharging = false;
-        isCasting = false;
-        isWaitingForFish = false;
-        isReeling = false;
-        isCaught = false;
         isMouseHeld = false;
         isLeftHeld = false;
         isRightHeld = false;
-        debug=false;
-        god=false;
+
+        // Debug
+        debug = false;
+        god = false;
+
+        // Game objects
+        background = new Background(0, 0, 1920, 1080, gameData.getBackground());
+        fishingState = FishingState.FALSE;
         currentHabitat = gameData.getHabitat();
-        if (currentHabitat!=null)
-        {possibleFishes = Database.getAllFishByHabitat(currentHabitat);}
-        random = new Random();
+        if (currentHabitat != null) {
+            possibleFishes = Database.getAllFishByHabitat(currentHabitat);
+        }
+        timeOfDay = 0f;
 
-                // Day-Night initialization
-                timeOfDay = 0f; // Starting at noon
-                dayLight = new TimeOfDayTint();
-        
-        // Add mouse motion listener to track mouse position
-        addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                double scaleX = 1920.0 / getWidth();  // Original width / current width
-                double scaleY = 1080.0 / getHeight(); // Original height / current height
-        
-                // Convert the current mouse position to the original coordinate system
-                mouseX = (int) (e.getX() * scaleX);
-                mouseY = (int) (e.getY() * scaleY);
-            }
-        });
+        // Add event listeners
+        setEventListeners();
 
-        // Add mouse listener for button interactions and fishing mechanics
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                isMouseHeld = true;
-
-                if(debug){
-                    System.out.print(mouseX);
-                    System.out.print(" ");
-                    System.out.println(mouseY);
-                }
-                if (isFishing == null) {
-                    isFishing = false;
-                }
-
-            
-                int clicked = e.getButton();
-                if (clicked == 1) {
-                    if(button!= null)
-                    {button.listener(mouseX, mouseY, true);}
-                    if (isFishing && !isCasting && !isReeling &&!isWaitingForFish) {
-                        isCharging = true;
-                        chargeMeter = new ChargeMeter(player.getX(), player.getY(), 50, 200, 5, 0.05f, 0.9f);
-                    }
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                if (isFishing == null) {
-                    isFishing = false;
-                }
-                isMouseHeld = false;
-                int released = e.getButton();
-
-                if (isFishing && !isCasting && !isReeling&&!isWaitingForFish && chargeMeter != null) {
-                    chargePower = chargeMeter.getAccuracy();
-                    chargeMeter = null;
-                    isCasting = true;
-                    isCharging = false;
-                }
-            }
-        });
-
-        // Add key listener for player movement
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                int key = e.getKeyCode();
-                if (isFishing == null) {
-                    isFishing  = false;
-
-                }
-                if (key == KeyEvent.VK_ESCAPE){
-                    if(isFishing){
-                    for (FishingSpot fishingSpot : gameData.getFishingSpots()) {
-                        fishingSpot.setFishing(false);
-                        isCasting = false;
-                        isWaitingForFish=false;
-                        isCaught = false;
-                        isCharging = false;
-                        isReeling = false;
-                        fishingLine = null;
-                        fish = null;
-                    }
-                    }
-                    else{
-                        Main.switchToGUI("pause");
-                    }
-                }
-                if (key == KeyEvent.VK_1){
-                    debug=!debug;
-                    System.out.println("debugging");
-                }
-                if (key == KeyEvent.VK_2){
-                    god=!god;
-                    System.out.println("god activated");
-                }
-                if (key == KeyEvent.VK_LEFT) {
-                    isLeftHeld = true;
-                    if (isFishing) {
-                        // Implement fishing movement if needed
-                    } else {
-                        player.setDx(-player.getMaxSpeed());
-                    }
-                }
-
-                if (key == KeyEvent.VK_RIGHT) {
-                    isRightHeld = true;
-                    if (isFishing) {
-                        // Implement fishing movement if needed
-                    } else {
-                        player.setDx(player.getMaxSpeed());
-                    }
-                }
-
-                if (key == KeyEvent.VK_UP) {
-                    if (isFishing) {
-                        // Implement fishing movement if needed
-                    } else {
-                        player.setDy(-player.getMaxSpeed());
-                    }
-                }
-
-                if (key == KeyEvent.VK_DOWN) {
-                    if (isFishing) {
-                        // Implement fishing movement if needed
-                    } else {
-                        player.setDy(player.getMaxSpeed());
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                int key = e.getKeyCode();
-                
-                if (key == KeyEvent.VK_LEFT) {
-                    isLeftHeld = false;
-                    player.setDx(0);
-                }
-                if (key == KeyEvent.VK_RIGHT) {
-                    isRightHeld = false;
-                    player.setDx(0);
-                }
-
-                if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) {
-                    player.setDy(0);
-                }
-            }
-        });
-
-        // Initialize the timer to call actionPerformed() at regular intervals
-        timer = new Timer(16, this); // Approximately 60 FPS (1000ms/60)
+        timer = new Timer(16, this); // Timer for 60 FPS
         timerStart();
         setFocusable(true);
     }
-    public void timerStart(){
+
+    /**
+     * Starts the game timer.
+     */
+    public void timerStart() {
         timer.start();
     }
-    public void timerStop(){
-        timer.stop();
 
+    /**
+     * Stops the game timer.
+     */
+    public void timerStop() {
+        timer.stop();
     }
+
+    /**
+     * Paints the game components onto the screen.
+     * 
+     * @param g The Graphics object used for drawing.
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-    
-        // Cast to Graphics2D for more advanced operations
         Graphics2D g2d = (Graphics2D) g;
-    
-        // Calculate the scaling factors for width and height
-        double scaleX = getWidth() / 1920.0;  
-        double scaleY = getHeight() / 1080.0; 
-    
-        // Apply the scaling transformation to the Graphics2D object
+
+        double scaleX = getWidth() / 1920.0;
+        double scaleY = getHeight() / 1080.0;
         g2d.scale(scaleX, scaleY);
-    
-        // Draw all the game components using the scaled Graphics2D object
-        draw(g2d);
 
-        
-    }
-    
+        // Call the draw method from Renderer
+        renderer.draw(g2d, fishingLogic.getFishingLine(), player, texts, fishingLogic.getFish(), timeOfDay, chargeMeter, gameData,background);
 
-    /**
-     * Draws all game components, including the background, player, buttons, and other sprites.
-     * 
-     * @param g The Graphics2D object used for drawing.
-     */
-    private void draw(Graphics2D g) {
-        
-        background.draw(g);
-        if (button!= null)
-        {button.draw(g);}
-        if (fishingLine != null) {
-            fishingLine.draw(g);
+        if (debug) {
+            renderer.drawDebug(g2d, gameData);
         }
-        
-        if (lights!=null){
-        for (Light light : lights){
-            light.update(timeOfDay);
-            light.draw(g);
-        }
-    }
-
-
-        player.draw(g);
-        dayLight.draw(g, timeOfDay);
-
-
-        for(Text text : texts){
-            text.draw(g);
-        }
-
-
-        if (chargeMeter != null) {
-            chargeMeter.draw(g);
-        }
-        if (fish!=null){
-            fish.draw(g);
-        }
-        if(debug){
-        if(gameData.getWater()!=null){
-            gameData.getWater().draw(g);
-        }
-
-        if(gameData.getShelves()!=null){
-            for(Shelf shelf : gameData.getShelves()){
-                shelf.draw(g);
-            }
-        }
-
-        for (Door door : gameData.getDoors()) {
-            door.draw(g);
-        }
-        
-        for (Sprite sprite : gameData.getSprites()) {
-            sprite.draw(g);
-        }
-        if (gameData.getFishingSpots() != null) {
-            for (FishingSpot fishingSpot : gameData.getFishingSpots()) {
-                fishingSpot.draw(g);
-            }
-        }
-        
-    }
-
-
-
-
-
-
-
     }
 
     /**
@@ -380,149 +159,201 @@ public class GameLoop extends JPanel implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        
-        for(Text text :texts){
+        // Update all text elements
+        for (Text text : texts) {
             text.update();
         }
 
-        timeOfDay += timeSpeed;
+        // Increment the time of day
+        timeOfDay += TIMESPEED;
         if (timeOfDay > 1) {
             timeOfDay = 0;
         }
 
+        // Update fishing logic
+        fishingState = fishingLogic.update(isMouseHeld, isLeftHeld, isRightHeld, chargeMeter, player, chargePower, gameData, possibleFishes, texts, fishingState,water);
 
-        if (isFishing != null) {
-            if (isCharging) {
-                if (isMouseHeld && chargeMeter != null) {
-                    chargeMeter.increaseCharge();
-                }
-            }
-            if (isCasting) {
-                if(player.getState()!="casting"){
-                    player.setState("casting");
-                    player.refreshAnimation();
-                    player.setAnimationSpeed(10);
-
-                }
-                if (player.getIsAnimationComplete()){
-                fishingLine = new FishingLine((player.getX() + player.getW() / 2), player.getY() - Math.round(chargePower * 100), 15, 15, (player.getX() + player.getW()/2 ), (player.getY() + (player.getH()-player.getH()/4 )));
-                fishWaitTimer = (1-chargePower) + 1;
-                chargePower = 0;
-                isCasting = false;
-                isWaitingForFish = true;
-                player.setState("idle_fishing");
-                player.refreshAnimation();
-                player.setAnimationSpeed(5);
-                }
-            }
-            if (isWaitingForFish){
-                fishWaitTimer-=0.01;
-                if(fishWaitTimer<=0){
-                    fishWaitTimer=0;
-                if (fish==null){
-                    while(fish==null){
-                    for(Fish possibleFish: possibleFishes){
-                        if (random.nextInt(0,10)<possibleFish.getRarity()){
-                            fish = possibleFish;
-                            break;
-                        }
-                    }
-                    }
-                    fish.spawn(gameData.getWater(),fishingLine.getFishingLineFloat().getX(), fishingLine.getFishingLineFloat().getY());
-                }
-            
-                if(fish.getHooked()){
-                    if(fish.getIsAnimationComplete()){
-                    isWaitingForFish=false;
-                    isReeling=true;
-                    fish.setIsVisible(false);
-                    }
-                    
-                }
-                else{
-                    fish.update(fishingLine.getFishingLineFloat().getX(),fishingLine.getFishingLineFloat().getY());
-                }
-            }
-
-            }
-
-            if (isReeling) {
-                
-                fishingLine.update(isLeftHeld, isRightHeld, isMouseHeld);
-
-                if (isLeftHeld && !isRightHeld){
-                    player.setState("reelingLeft");
-                }
-                else if (isRightHeld && !isLeftHeld){
-                    player.setState("reelingRight");
-                }
-                else{
-                    player.setState("reeling");
-                }
-                if (fishingLine.getIsGameOver()) {
-                    fish = null;
-                    fishingLine = null;
-                    isReeling = false;
-    
-                }
-            }
-            if (isCaught){
-                fishingLine = null;
-                if(player.getState()!="catching"){
-                player.setState("catching");
-                player.refreshAnimation();
-                player.setAnimationSpeed(10);
-                }
-                if(player.getIsAnimationComplete()){
-                    isCaught=false;
-                    player.refreshAnimation();
-                    player.setAnimationSpeed(5);
-
-                    Database.setFishWeight(fish);
-                    texts.add(new TextTemp(1920/4,1080/2,100,fish.getName(),Color.white,100));
-                    texts.add(new TextTemp(1920/3,1080/2+100,100,String.valueOf(fish.getWeight())+"lb" ,Color.white,100));
-                    fish=null;
-
-                }
-                
-                
-            }
-            if (isFishing && !isCaught && !isReeling && !isCasting && !isCharging && !isWaitingForFish){
-                player.setState("idle_back");
-            }
-        }
-
-        // Check if level has changed and reload data if necessary
-        for (Door door : gameData.getDoors()) {
-            String newPath = door.levelChanged();
-            if (newPath != null) {
-                gameData.loadGameData(newPath);
-                player = new Player(door.getToX(), door.getToY(),  gameData.getPlayerWidth(), gameData.getPlayerWidth(), gameData.getPlayer(), maxSpeed);
-                background = new Background(0, 0, background.getW(), background.getH(), gameData.getBackground());
-                lights = gameData.getLights();
-                logic.setPlayer(player);
-                camera.setPlayer(player);
-                camera.setLogic(logic);
-                currentHabitat = gameData.getHabitat();
-                if (currentHabitat!=null)
-                {possibleFishes = Database.getAllFishByHabitat(currentHabitat);}
-            }
-        }
-
-        if (gameData.getFishingSpots() != null) {
-            for (FishingSpot fishingSpot : gameData.getFishingSpots()) {
-                isFishing = fishingSpot.getFishing();
-                if(isFishing!=null)
-                {player.setIsFishing(isFishing);}
-            }
-        }
-        // Update game state
-        if (button != null)
-        {button.listener(mouseX, mouseY, false);}
+        // Check for level change and fishing state
+        checkLevelChange();
+        checkFishing();
 
         // Move player based on current dx/dy values
         player.move(player.getDx(), player.getDy());
+        adjustCamera();
+        checkCollisions();
 
+        // Redraw the screen
+        repaint();
+    }
+
+    /**
+     * Sets up the mouse and keyboard event listeners for the game.
+     * 
+     * TODO: The current event listener code is embedded directly in the `GameLoop` class. 
+     * This violates the Single Responsibility Principle and makes the class harder to maintain and test.
+     * I should refactor this by moving the event listeners into their own dedicated classes, e.g., 
+     * `MouseEventListener` and `KeyboardEventListener`. This will improve readability and allow for easier unit testing of event handling logic.
+     */
+    private void setEventListeners() {
+        // Mouse motion listener for tracking mouse movement
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                double scaleX = 1920.0 / getWidth();
+                double scaleY = 1080.0 / getHeight();
+                // Convert the current mouse position to the original coordinate system
+                mouseX = (int) (e.getX() * scaleX);
+                mouseY = (int) (e.getY() * scaleY);
+            }
+        });
+
+        // Mouse listener for button interactions and fishing mechanics
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                isMouseHeld = true;
+                if (debug) {
+                    System.out.print(mouseX);
+                    System.out.print(" ");
+                    System.out.println(mouseY);
+                }
+
+                int clicked = e.getButton();
+                if (clicked == 1) {
+                    if (fishingState == FishingState.IDLE) {
+                        fishingState = FishingState.CHARGING;
+                        chargeMeter = new ChargeMeter(player.getX() + player.getW(), player.getY(), 50, 200, 5, 0.05f, 0.9f);
+                    }
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                isMouseHeld = false;
+                if (chargeMeter != null && fishingState == FishingState.CHARGING) {
+                    chargePower = chargeMeter.getAccuracy();
+                    chargeMeter = null;
+                    fishingState = FishingState.CASTING;
+                }
+            }
+        });
+
+        // Key listener for player movement and other controls
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                int key = e.getKeyCode();
+                if (key == KeyEvent.VK_ESCAPE) {
+                    if (fishingState != FishingState.FALSE) {
+                        for (FishingSpot fishingSpot : gameData.getFishingSpots()) {
+                            fishingSpot.setFishing(false);
+                        }
+                        fishingLogic.setFishingLine(null);
+                        fishingLogic.setFish(null);
+                        fishingState = FishingState.FALSE;
+                        player.setIsFishing(false);
+                    } else {
+                        Main.switchToGUI("pause");
+                    }
+                }
+                if (key == KeyEvent.VK_F1) {
+                    debug = !debug;
+                    System.out.println("Debugging");
+                }
+                if (key == KeyEvent.VK_F2) {
+                    god = !god;
+                    System.out.println("God mode activated");
+                }
+                if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
+                    isLeftHeld = true;
+                    if (fishingState != FishingState.FALSE) {
+                        // Implement fishing movement if needed
+                    } else {
+                        player.setDx(-player.getMaxSpeed());
+                    }
+                }
+                if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
+                    isRightHeld = true;
+                    if (fishingState != FishingState.FALSE) {
+                        // Implement fishing movement if needed
+                    } else {
+                        player.setDx(player.getMaxSpeed());
+                    }
+                }
+                if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
+                    if (fishingState != FishingState.FALSE) {
+                        // Implement fishing movement if needed
+                    } else {
+                        player.setDy(-player.getMaxSpeed());
+                    }
+                }
+                if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
+                    if (fishingState != FishingState.FALSE) {
+                        // Implement fishing movement if needed
+                    } else {
+                        player.setDy(player.getMaxSpeed());
+                    }
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                int key = e.getKeyCode();
+
+                if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
+                    isLeftHeld = false;
+                    player.setDx(0);
+                }
+                if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
+                    isRightHeld = false;
+                    player.setDx(0);
+                }
+
+                if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W || key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
+                    player.setDy(0);
+                }
+            }
+        });
+    }
+
+    /**
+     * Checks for collisions between the player and other objects in the game.
+     */
+    private void checkCollisions() {
+        // Check collisions with other sprites
+        if (!god) {
+            logic.collisionDetection(player, gameData.getSprites());
+
+            if (gameData.getShelves() != null) {
+                for (Shelf shelf : gameData.getShelves()) {
+                    logic.collisionDetection(player, shelf, 1);
+                }
+            }
+            logic.collisionDetection(player, gameData.getDoors());
+            if (gameData.getFishingSpots() != null) {
+                logic.collisionDetection(player, gameData.getFishingSpots());
+            }
+        }
+
+        if (fishingLogic.getFishingLine() != null && fishingState == FishingState.REELING) {
+            if (!logic.isColliding(player, fishingLogic.getFishingLine().getFishingLineFloat())) {
+                fishingState = FishingState.REELING;
+            } else {
+                fishingState = FishingState.CAUGHT;
+            }
+        }
+
+        if (fishingLogic.getFishingLine() != null && fishingLogic.getFish() != null) {
+            if (logic.isColliding(fishingLogic.getFish(), fishingLogic.getFishingLine().getFishingLineFloat())) {
+                fishingLogic.getFish().hooking();
+            }
+        }
+    }
+
+    /**
+     * Adjusts the camera based on player movement and screen boundaries.
+     */
+    public void adjustCamera() {
         // Adjust the camera movement if the player reaches near the screen boundary
         camera.cameraMove();
 
@@ -540,44 +371,46 @@ public class GameLoop extends JPanel implements ActionListener {
                     fishingSpot.move(camera.getDx(), camera.getDy());
                 }
             }
-            if (gameData.getWater()!=null){
+            if (gameData.getWater() != null) {
                 gameData.getWater().move(camera.getDx(), camera.getDy());
             }
         }
+    }
 
-        // Check collisions with other sprites
-        if(!god){
-        logic.collisionDetection(player, gameData.getSprites());
-
-        if(gameData.getShelves()!=null){
-            for(Shelf shelf : gameData.getShelves()){
-                logic.collisionDetection(player,shelf ,1);
-            }
-        }
-        logic.collisionDetection(player, gameData.getDoors());
+    /**
+     * Checks if the player is at a fishing spot and updates fishing state accordingly.
+     */
+    public void checkFishing() {
         if (gameData.getFishingSpots() != null) {
-            logic.collisionDetection(player, gameData.getFishingSpots());
-        }
-    }
-        if (fishingLine != null && isReeling) {
-            isReeling = !(logic.isColliding(player, fishingLine.getFishingLineFloat()));
-            isCaught = !isReeling;
-        }
-        if(fishingLine!=null && fish!=null){
-            if(logic.isColliding(fish,fishingLine.getFishingLineFloat())){
-                fish.hooking();
+            for (FishingSpot fishingSpot : gameData.getFishingSpots()) {
+                if (fishingSpot.getFishing()) {
+                    if (fishingState == FishingState.FALSE) {
+                        fishingState = FishingState.IDLE;
+                    }
+                    player.setIsFishing(true);
+                }
             }
-                
-            
         }
-
-        // Redraw the screen
-        repaint();
     }
 
-
-
-
-
-
+    /**
+     * Checks if the level has changed and reloads data if necessary.
+     */
+    public void checkLevelChange() {
+        // Check if level has changed and reload data if necessary
+        for (Door door : gameData.getDoors()) {
+            String newPath = door.levelChanged();
+            if (newPath != null) {
+                gameData.loadGameData(newPath);
+                background = new Background(background.getX(), background.getY(), background.getW(), background.getH(), gameData.getBackground());
+                player = new Player(door.getToX(), door.getToY(), gameData.getPlayerWidth(), gameData.getPlayerWidth(), gameData.getPlayer(), MAXSPEED);
+                water = gameData.getWater();
+                camera.setPlayer(player);
+                currentHabitat = gameData.getHabitat();
+                if (currentHabitat != null) {
+                    possibleFishes = Database.getAllFishByHabitat(currentHabitat);
+                }
+            }
+        }
+    }
 }

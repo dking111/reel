@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.RoundRectangle2D;
 import java.io.File;
-
 import javax.swing.ImageIcon;
 
 /**
@@ -45,19 +44,10 @@ public class ImageButton extends Button {
      */
     @Override
     public void draw(Graphics2D g2d) {
-        // Draw the button's background with rounded corners
         super.draw(g2d);
-
-        // Create a rounded rectangle shape to be used as a clipping area
         RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, w, h, arcWidth, arcHeight);
-
-        // Set the clipping area to the rounded rectangle
         g2d.setClip(roundedRectangle);
-
-        // Draw the image inside the rounded rectangle
         g2d.drawImage(image, x, y, w, h, null);
-
-        // Reset the clipping area to allow further drawing operations
         g2d.setClip(null);
     }
 

@@ -36,7 +36,6 @@ import java.awt.image.BufferedImage;
 public class GUI extends JPanel implements ActionListener {
     private int mouseX, mouseY;
     private Timer timer;
-    private Main mainFrame;
     private Page currentPage;
     private PageData pageData;
     private BufferedImage backgroundImage; // New field to store the background image
@@ -46,8 +45,7 @@ public class GUI extends JPanel implements ActionListener {
      * 
      * @param mainFrame The main application frame that contains this GUI panel.
      */
-    public GUI(Main mainFrame) {
-        this.mainFrame = mainFrame;
+    public GUI() {
         this.pageData = new PageData(this);
         // Set panel properties
         setPreferredSize(new Dimension(1920, 1080));
@@ -139,7 +137,7 @@ public class GUI extends JPanel implements ActionListener {
      * Switches the application from the GUI to the game loop.
      */
     public void switchToGameLoop() {
-        mainFrame.switchToGameLoop();
+        Main.switchToGameLoop();
     }
 
     /**
@@ -150,6 +148,7 @@ public class GUI extends JPanel implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+        System.out.println("running");
         // Perform periodic updates
         for (Button button : currentPage.getButtons()) {
             button.listener(mouseX, mouseY, false);

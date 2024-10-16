@@ -2,7 +2,6 @@ package main.GameObjects;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.lang.Math;
 
 /**
  * Represents a charge meter that visually indicates the current charge level
@@ -54,16 +53,16 @@ public class ChargeMeter extends Sprite {
      */
     @Override
     public void draw(Graphics2D g) {
-        g.setColor(Color.BLACK); // Set the color for the outer border of the charge meter
-        g.fillRect(x, y, w, h); // Draw the charge meter's border
+        g.setColor(Color.BLACK);
+        g.fillRect(x, y, w, h);
 
-        g.setColor(Color.GRAY); // Set the color for the background of the charge meter
+        g.setColor(Color.GRAY);
         g.fillRect(x + border, y + border, w - 2 * border, h - 2 * border);
 
-        g.setColor(Color.GREEN); // Set the color for the current charge level
+        g.setColor(Color.GREEN);
         g.fillRect(x + border, (y + border) + (h - Math.round(h * currentCharge)), w - 2 * border, Math.round(h * currentCharge) - 2 * border);
 
-        g.setColor(Color.RED); // Set the color for the optimal charge level indicator
+        g.setColor(Color.RED);
         g.fillRect(x + border, (y + border) + (h - Math.round(h * optimalCharge)), w - 2 * border, 5);
     }
 

@@ -4,60 +4,60 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 /**
- * Represents a fishing spot in the game where players can engage in fishing activities.
+ * Represents a isFishing spot in the game where players can engage in isFishing activities.
  * The spot is visually represented as a colored rectangle.
  */
 public class FishingSpot extends Sprite {
-    private Boolean fishing;
+
+    private Boolean isFishing; 
 
     /**
      * Constructs a FishingSpot instance with the specified parameters.
      *
-     * @param x The x-coordinate of the fishing spot.
-     * @param y The y-coordinate of the fishing spot.
-     * @param w The width of the fishing spot.
-     * @param h The height of the fishing spot.
+     * @param x The x-coordinate of the isFishing spot.
+     * @param y The y-coordinate of the isFishing spot.
+     * @param w The width of the isFishing spot.
+     * @param h The height of the isFishing spot.
      */
     public FishingSpot(int x, int y, int w, int h) {
         super(x, y, w, h);
-        fishing = false;
+        isFishing = false; 
     }
 
     /**
-     * Draws the fishing spot on the screen.
-     * The spot is rendered as a filled rectangle using a predefined color.
+     * Draws the isFishing spot on the screen as a filled rectangle.
      *
-     * @param g The Graphics2D object used for drawing the fishing spot.
+     * @param g The Graphics2D object used for drawing the isFishing spot.
      */
     @Override
     public void draw(Graphics2D g) {
-        g.setColor(Color.BLACK); // Set the color for the fishing spot
-        g.fillRect(x, y, w, h); // Draw the fishing spot as a filled rectangle using inherited fields
+        g.setColor(Color.BLACK);
+        g.fillRect(x, y, w, h);
     }
 
     /**
-     * Marks the fishing spot as being active for fishing when a collision occurs.
+     * Marks the isFishing spot as being active for isFishing when a collision occurs.
      */
     @Override
     public void collided() {
-        fishing = true;
+        isFishing = true; 
     }
 
     /**
-     * Returns whether the fishing spot is active for fishing.
+     * Returns whether the isFishing spot is active for fishing.
      *
-     * @return True if the fishing spot is active; otherwise, returns false.
+     * @return True if the isFishing spot is active; otherwise, returns false.
      */
     public Boolean getFishing() {
-        return fishing;
+        return isFishing != null ? isFishing : false; 
     }
 
     /**
-     * Sets the fishing status of the fishing spot.
+     * Sets the isFishing status of the isFishing spot.
      *
-     * @param fishing The new fishing status to be set.
+     * @param isFishing The new isFishing status to be set.
      */
-    public void setFishing(Boolean fishing) {
-        this.fishing = fishing;
+    public void setFishing(Boolean isFishing) {
+        this.isFishing = isFishing; 
     }
 }

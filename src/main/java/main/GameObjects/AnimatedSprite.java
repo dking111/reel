@@ -14,12 +14,12 @@ import java.util.List;
  * images for a particular animation state.
  */
 public class AnimatedSprite extends Sprite {
-    protected List<Image> currentAnimation; // List of images representing the current animation
-    protected Dictionary<String, List<Image>> animationDict; // Dictionary of all animations by state
-    protected int currentFrame; // Current frame index in the animation
-    protected int frameCounter; // Counter to control frame rate
-    protected String state; // Current animation state (e.g., "idle", "run")
-    protected int animationSpeed; // Speed of animation in frames per second
+    protected List<Image> currentAnimation; 
+    protected Dictionary<String, List<Image>> animationDict; 
+    protected int currentFrame; 
+    protected int frameCounter; 
+    protected String state; 
+    protected int animationSpeed; 
     protected Boolean isAnimationComplete;
 
     /**
@@ -51,22 +51,14 @@ public class AnimatedSprite extends Sprite {
     @Override
     public void draw(Graphics2D g) {
         if (isVisible) {
-            // Fetch the correct animation based on the current state
             currentAnimation = animationDict.get(state);
-
-            // Draw the current frame of the animation
             g.drawImage(currentAnimation.get(currentFrame), getX(), getY(), getW(), getH(), null);
-            
-            // Check if the current animation is complete before updating the frame
             isAnimationComplete = (currentFrame == currentAnimation.size() - 1);
-
 
             if (frameCounter == 1) {
                 currentFrame = (currentFrame + 1) % currentAnimation.size();
             }
-            // Increment frameCounter and reset when it reaches the animation speed
             frameCounter = (frameCounter + 1) % animationSpeed;
-            
         }
     }
 
@@ -84,7 +76,7 @@ public class AnimatedSprite extends Sprite {
 
         for (File directory : listOfSubFolders) {
             List<Image> animation = new ArrayList<>();
-            
+
             if (directory.isDirectory()) {
                 File subFolder = new File(path + "\\" + directory.getName());
                 File[] listOfFiles = subFolder.listFiles();
@@ -96,7 +88,7 @@ public class AnimatedSprite extends Sprite {
                     }
                 }
             }
-            
+
             dict.put(directory.getName(), animation);
         }
 
@@ -110,7 +102,7 @@ public class AnimatedSprite extends Sprite {
         currentAnimation = animationDict.get(state);
         currentFrame = 0;
         frameCounter = 0;
-        isAnimationComplete = false; // Ensure animation starts fresh
+        isAnimationComplete = false;
     }
 
     /**
@@ -121,8 +113,8 @@ public class AnimatedSprite extends Sprite {
     public void setState(String newState) {
         if (!state.equals(newState)) {
             state = newState;
-            refreshAnimation(); // Reset animation when the state changes
-            isAnimationComplete = false; // Reset the completion flag
+            refreshAnimation();
+            isAnimationComplete = false;
         }
     }
 
@@ -182,22 +174,42 @@ public class AnimatedSprite extends Sprite {
         } else {
             dx /= distance;
             dy /= distance;
-            move((int)Math.round(dx * stepSize), (int)Math.round(dy * stepSize));
+            move((int) Math.round(dx * stepSize), (int) Math.round(dy * stepSize));
         }
     }
 
+    /**
+     * Gets whether the animation is complete for the current state.
+     * 
+     * @return True if the animation is complete, false otherwise.
+     */
     public Boolean getIsAnimationComplete() {
         return isAnimationComplete;
     }
 
+    /**
+     * Gets the current state of the sprite.
+     * 
+     * @return The current state of the sprite.
+     */
     public String getState() {
         return state;
     }
 
+    /**
+     * Sets the speed of the animation.
+     * 
+     * @param animationSpeed the speed of the animation (higher values make the animation slower).
+     */
     public void setAnimationSpeed(int animationSpeed) {
         this.animationSpeed = animationSpeed;
     }
 
+    /**
+     * Gets the current animation speed.
+     * 
+     * @return The speed of the animation.
+     */
     public int getAnimationSpeed() {
         return animationSpeed;
     }

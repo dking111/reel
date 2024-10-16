@@ -4,12 +4,16 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 /**
- * Represents a basic drawable and movable sprite in the game.
- * This class provides functionality for position, size, movement, and rendering.
+ * The {@code Sprite} class represents a basic drawable and movable object in the game.
+ * It includes position, size, visibility, and movement capabilities, along with methods to render
+ * the sprite on a {@code Graphics2D} object and handle collisions.
  */
 public class Sprite {
-    protected int x, y, w, h; // Position and dimensions of the sprite
-    protected int dx, dy;    // Velocity of the sprite
+
+    private static final Color DEFAULT_COLOR = Color.BLUE;  
+    protected int x, y; 
+    protected int w, h; 
+    protected int dx, dy; 
     protected boolean isVisible;
 
     /**
@@ -25,40 +29,40 @@ public class Sprite {
         this.y = y;
         this.w = w;
         this.h = h;
-        dx = 0;
-        dy = 0;
-        isVisible = true;
+        this.dx = 0;  
+        this.dy = 0;  
+        this.isVisible = true;  
     }
 
     /**
      * Draws the sprite on the specified {@code Graphics2D} context.
+     * By default, the sprite is drawn as a filled rectangle in the {@link DEFAULT_COLOR}.
      *
      * @param g The {@code Graphics2D} context on which to draw the sprite.
      */
     public void draw(Graphics2D g) {
-        g.setColor(Color.BLUE); // Set the color for the sprite
-        g.fillRect(x, y, w, h); // Draw the sprite as a filled rectangle    
-            
+            g.setColor(DEFAULT_COLOR);   
+            g.fillRect(x, y, w, h);      
+        
     }
 
     /**
-     * Moves the sprite by the specified velocity.
+     * Moves the sprite by updating its x and y coordinates based on the given velocity.
      *
      * @param dx The change in x-coordinate (horizontal movement).
      * @param dy The change in y-coordinate (vertical movement).
      */
     public void move(int dx, int dy) {
-        setX(getX() + dx);
-        setY(getY() + dy);
+        setX(getX() + dx);  
+        setY(getY() + dy); 
     }
-
 
     /**
      * This method is called when the sprite collides with another object.
-     * It is intended to be overridden by subclasses to provide specific collision handling.
+     * It is intended to be overridden by subclasses to provide specific collision handling logic.
      */
     public void collided() {
-        // Empty method for polymorphism
+        return;
     }
 
     // Getters and setters
@@ -147,11 +151,21 @@ public class Sprite {
      */
     public void setDy(int dy) { this.dy = dy; }
 
-    public Boolean getIsVisible(){
+    /**
+     * Checks if the sprite is currently visible.
+     *
+     * @return {@code true} if the sprite is visible, {@code false} otherwise.
+     */
+    public boolean getIsVisible() {
         return isVisible;
     }
 
-    public void setIsVisible(Boolean isVisible){
-        this.isVisible =isVisible;
+    /**
+     * Sets the visibility of the sprite.
+     *
+     * @param isVisible {@code true} to make the sprite visible, {@code false} to hide it.
+     */
+    public void setIsVisible(boolean isVisible) {
+        this.isVisible = isVisible;
     }
 }

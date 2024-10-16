@@ -13,8 +13,8 @@ public class Button extends Sprite {
     private Runnable action;
     private boolean isHovered;
     private boolean isActive;
-    protected int arcWidth;  // Width of the arc for rounded corners
-    protected int arcHeight; // Height of the arc for rounded corners
+    protected int arcWidth;  
+    protected int arcHeight; 
 
     /**
      * Constructs a Button instance with the specified parameters.
@@ -40,9 +40,6 @@ public class Button extends Sprite {
         this.isActive = false;
         this.arcWidth = arcWidth;
         this.arcHeight = arcHeight;
-
-        // Add mouse listener for hover and click effects
-        // This would generally be done in a GUI framework setup, not shown here
     }
 
     /**
@@ -54,7 +51,6 @@ public class Button extends Sprite {
     public void draw(Graphics2D g) {
         if (isActive) {
             g.setColor(activeColor);
-            //reset
             isActive = false;
         } else if (isHovered) {
             g.setColor(hoverColor);
@@ -62,7 +58,6 @@ public class Button extends Sprite {
             g.setColor(inactiveColor);
         }
 
-        // Draw the button with rounded corners
         g.fillRoundRect(x, y, w, h, arcWidth, arcHeight);
     }
 
@@ -72,9 +67,8 @@ public class Button extends Sprite {
      */
     public void onPress() {
         if (action != null) {
-            action.run(); // Execute the passed function
+            action.run();
         }
-        // You can implement specific logic for what happens when the button is pressed
     }
 
     /**
@@ -92,7 +86,6 @@ public class Button extends Sprite {
                 onPress();
             }
         } else {
-            //reset
             isHovered = false;
         }
     }
