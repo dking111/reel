@@ -16,22 +16,20 @@ import main.GameObjects.Fish;
  * This class provides methods to retrieve and update fish data from a SQLite database.
  */
 public class Database {
-    private static final String URL = "jdbc:sqlite:src\\main\\database\\data.db";
+    // Relative path to the database inside the resources folder
+    private static final String DB_RESOURCE_PATH = "/database/data.db";  // Path inside resources
 
     /**
-     * Constructs a Database instance.
-     */
-    public Database() {
-    }
-
-    /**
-     * Establishes a connection to the SQLite database.
-     *
-     * @return A {@link Connection} object representing the connection to the database.
-     * @throws SQLException if there is an error while connecting to the database.
+     * Gets the connection to the database.
+     * Uses the database file directly from the resources folder.
+     * 
+     * @return Connection to the SQLite database
+     * @throws SQLException if a database access error occurs
      */
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL);
+        // Using the path to the database file inside the resources folder
+        String url = "jdbc:sqlite:" + Database.class.getResource(DB_RESOURCE_PATH).getPath();
+        return DriverManager.getConnection(url);
     }
 
     /**
@@ -42,7 +40,7 @@ public class Database {
      * @return A list of {@link Fish} objects that are present in the specified habitat.
      */
     public static List<Fish> getAllFishByHabitat(String habitat) {
-        List<Fish> fishList = new ArrayList<Fish>();
+        List<Fish> fishList = new ArrayList<>();
         String sql = "SELECT * FROM fish WHERE habitat = ? OR habitat = 'Both' ORDER BY rarity DESC";
 
         try (Connection conn = Database.getConnection();
@@ -70,7 +68,7 @@ public class Database {
      * @return A list of {@link Trophy} objects representing all available fish.
      */
     public static List<Trophy> getAllFish() {
-        List<Trophy> caughtFishList = new ArrayList<Trophy>();
+        List<Trophy> caughtFishList = new ArrayList<>();
         String sql = "SELECT * FROM fish ORDER BY type DESC";
 
         try (Connection conn = Database.getConnection();

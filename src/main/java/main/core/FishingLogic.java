@@ -188,7 +188,7 @@ public class FishingLogic {
      * @param player  The player object.
      * @param texts   The list of texts to display information about the fish.
      */
-    private void handleCaught(Player player, List<Text> texts) {
+    private void handleCaught(Player player, List<Text> texts)  {
         fishingLine = null;
 
         if (!player.getState().equals("catching")) {

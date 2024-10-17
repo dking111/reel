@@ -64,13 +64,13 @@ public class PageData {
         static final int PAGE_WIDTH = 1920;
         static final int PAGE_HEIGHT = 1080;
 
-        // Image Paths
-        static final String MENU_BACKGROUND = "src\\main\\resources\\GUI\\menuBackground.png";
-        static final String SETTINGS_BACKGROUND = "src\\main\\resources\\GUI\\settingsBackground.png";
-        static final String HELP_BACKGROUND = "src\\main\\resources\\GUI\\helpBackground.png";
-        static final String SHELF_IMAGE = "src\\main\\resources\\GUI\\shelf.png";
-        static final String SETTINGS_ICON = "src\\main\\resources\\GUI\\settingsIcon.png";
-        static final String BACK_ICON = "src\\main\\resources\\GUI\\backIcon.png";
+        // Image Paths 
+        static final String MENU_BACKGROUND = "/GUI/menuBackground.png";
+        static final String SETTINGS_BACKGROUND = "/GUI/settingsBackground.png";
+        static final String HELP_BACKGROUND = "/GUI/helpBackground.png";
+        static final String SHELF_IMAGE = "/GUI/shelf.png";
+        static final String SETTINGS_ICON = "/GUI/settingsIcon.png";
+        static final String BACK_ICON = "/GUI/backIcon.png";
     }
 
     /**

@@ -68,6 +68,7 @@ public class AnimatedSprite extends Sprite {
      * 
      * @param path the path to the directory containing animation subdirectories.
      * @return a dictionary mapping animation states to lists of images.
+     * TODO: convert to jar readable format
      */
     public Dictionary<String, List<Image>> loadAnimation(String path) {
         Dictionary<String, List<Image>> dict = new Hashtable<>();
@@ -214,3 +215,4 @@ public class AnimatedSprite extends Sprite {
         return animationSpeed;
     }
 }
+
