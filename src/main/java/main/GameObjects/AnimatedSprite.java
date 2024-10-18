@@ -1,12 +1,19 @@
 package main.GameObjects;
 
-import javax.swing.*;
+import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.net.URL;
 
 /**
  * Represents an animated sprite that can switch between different animations based on its state.
@@ -36,7 +43,7 @@ public class AnimatedSprite extends Sprite {
         super(x, y, w, h);
         currentFrame = 0;
         state = "idle";
-        animationDict = loadAnimation(path);
+        animationDict = loadAnimations(path);
         currentAnimation = animationDict.get("idle");
         frameCounter = 0;
         this.animationSpeed = animationSpeed;
@@ -69,30 +76,140 @@ public class AnimatedSprite extends Sprite {
      * @param path the path to the directory containing animation subdirectories.
      * @return a dictionary mapping animation states to lists of images.
      */
-    public Dictionary<String, List<Image>> loadAnimation(String path) {
+    public Dictionary<String, List<Image>> loadAnimations(String path) {
         Dictionary<String, List<Image>> dict = new Hashtable<>();
-        File folder = new File(path);
-        File[] listOfSubFolders = folder.listFiles();
+        List<String> folders = listFolderInResourceFolder(path);
+        List<String> imagePaths = null;
+        for (String subfolder :folders){
+            imagePaths = listFilesInResourceFolder(subfolder);
 
-        for (File directory : listOfSubFolders) {
             List<Image> animation = new ArrayList<>();
-
-            if (directory.isDirectory()) {
-                File subFolder = new File(path + "\\" + directory.getName());
-                File[] listOfFiles = subFolder.listFiles();
-
-                for (File file : listOfFiles) {
-                    if (file.isFile()) {
-                        ImageIcon icon = new ImageIcon(file.getPath());
-                        animation.add(icon.getImage());
-                    }
-                }
+            for (String imagePath : imagePaths){
+                animation.add(loadImage('/'+imagePath));
             }
-
-            dict.put(directory.getName(), animation);
+            dict.put(subfolder.substring(subfolder.lastIndexOf("/") + 1), animation);
         }
 
         return dict;
+    }
+
+    /**
+     * Lists the subdirectories in the specified resource folder.
+     * 
+     * @param path the path to the resource folder.
+     * @return a list of folder paths.
+     */
+    public List<String> listFolderInResourceFolder(String path) {
+        List<String> paths = new ArrayList<>();  // Initialize the list to store file paths
+        try {
+            // Get the resource as a URL
+            URL resourceUrl = getClass().getClassLoader().getResource(path);
+    
+            if (resourceUrl != null) {
+                // Check if running from a JAR file
+                if (resourceUrl.getProtocol().equals("jar")) {
+                    String jarPath = resourceUrl.getPath().substring(5, resourceUrl.getPath().indexOf("!"));
+                    try (JarFile jar = new JarFile(jarPath)) {
+                        // Iterate through the JAR file's entries
+                        Enumeration<JarEntry> entries = jar.entries();
+                        while (entries.hasMoreElements()) {
+                            JarEntry entry = entries.nextElement();
+                            // Check if the entry is inside the desired folder
+                            if (entry.getName().startsWith(path + "/") && entry.getName().length() > path.length() + 1 && !entry.getName().endsWith(".png")) {
+                                paths.add(entry.getName().substring(0, entry.getName().length() - 1));  // Add the file name (without directory structure)
+                            }
+                        }
+                    }
+                } else {
+                    // If not in a JAR, read from file system (during development)
+                    try (InputStream in = getClass().getClassLoader().getResourceAsStream(path);
+                         BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+                        String fileName;
+                        while ((fileName = reader.readLine()) != null) {
+                            paths.add(path + "/" + fileName);  // Add the file path to the list
+                        }
+                    }
+                }
+            } else {
+                System.out.println("Resource folder not found: " + path);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    
+        return paths;  // Ensure the method returns the paths list
+    }
+
+    /**
+     * Lists the files in the specified resource folder.
+     * 
+     * @param path the path to the resource folder.
+     * @return a list of file paths.
+     */
+    public List<String> listFilesInResourceFolder(String path) {
+        List<String> paths = new ArrayList<>();  // Initialize the list to store file paths
+        try {
+            // Get the resource as a URL
+            URL resourceUrl = getClass().getClassLoader().getResource(path);
+    
+            if (resourceUrl != null) {
+                // Check if running from a JAR file
+                if (resourceUrl.getProtocol().equals("jar")) {
+                    String jarPath = resourceUrl.getPath().substring(5, resourceUrl.getPath().indexOf("!"));
+                    try (JarFile jar = new JarFile(jarPath)) {
+                        // Iterate through the JAR file's entries
+                        Enumeration<JarEntry> entries = jar.entries();
+                        while (entries.hasMoreElements()) {
+                            JarEntry entry = entries.nextElement();
+                            // Check if the entry is inside the desired folder
+                            if (entry.getName().startsWith(path) && !entry.isDirectory()) {
+                                paths.add(entry.getName());  // Add the file path to the list
+                            }
+                        }
+                    }
+                } else {
+                    // If not in a JAR, read from file system (during development)
+                    try (InputStream in = getClass().getClassLoader().getResourceAsStream(path);
+                         BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+    
+                        String fileName;
+                        while ((fileName = reader.readLine()) != null) {
+                            paths.add(path + "/" + fileName);  // Add the file path to the list
+                        }
+                    }
+                }
+            } else {
+                System.out.println("Resource folder not found: " + path);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    
+        return paths;  // Ensure the method returns the paths list
+    }
+
+    /**
+     * Loads the image from the classpath (from within the JAR if needed).
+     * 
+     * @param path the path of the image resource.
+     * @return The loaded Image object, or null if there was an error.
+     */
+    private Image loadImage(String path) {
+        try {
+            // Load the resource using class loader
+            InputStream is = getClass().getResourceAsStream(path);
+
+            if (is != null) {
+                // Use ImageIO to read the image from the InputStream
+                return ImageIO.read(is);
+            } else {
+                System.err.println("Resource not found: " + path);
+                return null;
+            }
+        } catch (IOException e) {
+            System.err.println("Error loading image: " + e.getMessage());
+            return null;
+        }
     }
 
     /**

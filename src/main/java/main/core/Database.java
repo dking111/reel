@@ -1,5 +1,10 @@
 package main.core;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -16,23 +21,44 @@ import main.GameObjects.Fish;
  * This class provides methods to retrieve and update fish data from a SQLite database.
  */
 public class Database {
-    private static final String URL = "jdbc:sqlite:src\\main\\database\\data.db";
+    // Relative path to the database inside the resources folder
+    private static final String DB_RESOURCE_PATH = "/database/data.db";  // Path inside resources
 
     /**
-     * Constructs a Database instance.
+     * Gets the connection to the database.
+     * Uses the database file directly from the resources folder.
+     * 
+     * @return Connection to the SQLite database
+     * @throws SQLException if a database access error occurs
      */
-    public Database() {
+public static Connection getConnection() throws SQLException {
+    // Extract the database file from the resources (JAR) to a temporary directory
+    File tempDB = new File(System.getProperty("java.io.tmpdir") + File.separator + "game_data.db");
+
+    // If the file does not exist, extract it from the JAR
+    if (!tempDB.exists()) {
+        try (InputStream in = Database.class.getResourceAsStream(DB_RESOURCE_PATH);
+             OutputStream out = new FileOutputStream(tempDB)) {
+
+            if (in == null) {
+                throw new IOException("Database resource not found in JAR: " + DB_RESOURCE_PATH);
+            }
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = in.read(buffer)) > 0) {
+                out.write(buffer, 0, length);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new SQLException("Error extracting database from JAR to temp directory.");
+        }
     }
 
-    /**
-     * Establishes a connection to the SQLite database.
-     *
-     * @return A {@link Connection} object representing the connection to the database.
-     * @throws SQLException if there is an error while connecting to the database.
-     */
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL);
-    }
+    // Create the connection to the extracted database file
+    String url = "jdbc:sqlite:" + tempDB.getAbsolutePath();
+    return DriverManager.getConnection(url);
+}
 
     /**
      * Retrieves all fish from the database that are associated with a specific habitat.
@@ -42,7 +68,7 @@ public class Database {
      * @return A list of {@link Fish} objects that are present in the specified habitat.
      */
     public static List<Fish> getAllFishByHabitat(String habitat) {
-        List<Fish> fishList = new ArrayList<Fish>();
+        List<Fish> fishList = new ArrayList<>();
         String sql = "SELECT * FROM fish WHERE habitat = ? OR habitat = 'Both' ORDER BY rarity DESC";
 
         try (Connection conn = Database.getConnection();
@@ -70,7 +96,7 @@ public class Database {
      * @return A list of {@link Trophy} objects representing all available fish.
      */
     public static List<Trophy> getAllFish() {
-        List<Trophy> caughtFishList = new ArrayList<Trophy>();
+        List<Trophy> caughtFishList = new ArrayList<>();
         String sql = "SELECT * FROM fish ORDER BY type DESC";
 
         try (Connection conn = Database.getConnection();

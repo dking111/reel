@@ -1,5 +1,5 @@
 {
-    "sprites": [
+  "sprites": [
       {"x": -50, "y": -50, "w": 1970, "h": 50},
       {"x": -50, "y": -50, "w": 50, "h": 1130},
       {"x": 1920, "y": -50, "w": 50, "h": 1180},
@@ -7,28 +7,31 @@
       {"x": 0, "y": 0, "w": 400, "h": 258},
       {"x": 1173, "y": 660, "w": 200, "h": 300},
       {"x": 1124, "y": 997, "w": 300, "h": 100}
+  ],
 
+  "doors": [
+      {
+          "x": 215, 
+          "y": 1030, 
+          "w": 250, 
+          "h": 50,
+          "path": "levels/path_house.json", 
+          "toX": 241, 
+          "toY": 60
+      }
+  ],
 
-    ],
-
-    "doors": [
-      {"x": 215, "y": 1030, "w": 250, "h": 50,"path":"src\\main\\resources\\levels\\path_house.json","toX":241,"toY":60}
-
-    ],
-
-    "shelves": [
+  "shelves": [
       {"x": 563, "y": 0, "w": 317, "h": 5}
-    ],
-    "windowLight":{"lightPosX":1076,"lightPosY":93,"radius":300},
-    "fireLight":{"lightPosX":1643,"lightPosY":100,"radius":300},
-    "cameraBounds": 0,
-    "playerHeight":250,
-    "playerWidth":250,
-    "player":"src\\main\\resources\\assets\\player",
-    "background":"src\\main\\resources\\assets\\background_house"
-      
+  ],
 
+  "windowLight": {"lightPosX": 1076, "lightPosY": 93, "radius": 300},
+  "fireLight": {"lightPosX": 1643, "lightPosY": 100, "radius": 300},
 
-    
+  "cameraBounds": 0,
+  "playerHeight": 250,
+  "playerWidth": 250,
 
+  "player": "assets/player",
+  "background": "assets/background_house"
 }

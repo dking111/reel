@@ -134,7 +134,7 @@ public class FishingLogic {
             if (fish == null) {
                 while (fish == null) {
                     for (Fish possibleFish : possibleFishes) {
-                        if (random.nextInt(0, 10) < possibleFish.getRarity()) {
+                        if (random.nextInt(10) < possibleFish.getRarity()) {
                             fish = possibleFish;
                             break;
                         }
@@ -188,7 +188,7 @@ public class FishingLogic {
      * @param player  The player object.
      * @param texts   The list of texts to display information about the fish.
      */
-    private void handleCaught(Player player, List<Text> texts) {
+    private void handleCaught(Player player, List<Text> texts)  {
         fishingLine = null;
 
         if (!player.getState().equals("catching")) {

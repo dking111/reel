@@ -47,12 +47,8 @@ public class Trophy extends ImageSprite {
      * Sets the name of the trophy.
      * 
      * @param name The new name for the trophy.
-     * @throws IllegalArgumentException if the name is null or empty.
      */
     public void setName(String name) {
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Name cannot be null or empty.");
-        }
         this.name = name;
     }
 
@@ -60,12 +56,8 @@ public class Trophy extends ImageSprite {
      * Sets the weight of the trophy.
      * 
      * @param weight The new weight for the trophy.
-     * @throws IllegalArgumentException if the weight is non-positive.
      */
     public void setWeight(int weight) {
-        if (weight <= 0) {
-            throw new IllegalArgumentException("Weight must be a positive value.");
-        }
         this.weight = weight;
     }
 

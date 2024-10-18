@@ -1,7 +1,8 @@
 package main.core;
 
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.Gson;
@@ -52,9 +53,20 @@ public class GameData {
      */
     public void loadGameData(String filepath) {
         Gson gson = new Gson();
-        try (FileReader reader = new FileReader(filepath)) {
+        
+        // Use getResourceAsStream() to load the file as a resource from the classpath (JAR or filesystem)
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filepath);
+
+        if (inputStream == null) {
+            System.err.println("Error: Resource not found at " + filepath);
+            return;
+        }
+
+        try (InputStreamReader reader = new InputStreamReader(inputStream)) {
             // Deserialize JSON into GameData object
             GameData data = gson.fromJson(reader, GameData.class);
+
+            // Assign the data to the current object
             this.sprites = data.sprites;
             this.doors = data.doors;
             this.cameraBounds = data.cameraBounds;
@@ -71,10 +83,19 @@ public class GameData {
             this.windowLight = data.windowLight;
 
             // Initialize the lights list to avoid NullPointerException
+            this.lights = new ArrayList<>();
+            if (getWindowLight() != null) {
+                this.lights.add(getWindowLight());
+            }
+            if (getFireLight() != null) {
+                this.lights.add(getFireLight());
+            }
+
         } catch (IOException e) {
-            e.printStackTrace(); // Print error message
+            e.printStackTrace(); // Handle file I/O error
         }
     }
+
 
     /**
      * Returns the list of sprites representing various obstacles and game objects.
