@@ -48,13 +48,12 @@ public class FishingLine extends Sprite {
         this.playerX = playerX;
         this.playerY = playerY;
         random = new Random();
-
-        strugglesBeforeRest = random.nextInt(MIN_STRUGGLES_BEFORE_REST, MAX_STRUGGLES_BEFORE_REST);
-        maxStruggles = random.nextInt(4, 10);
+        strugglesBeforeRest = random.nextInt(MAX_STRUGGLES_BEFORE_REST-MIN_STRUGGLES_BEFORE_REST)+MIN_STRUGGLES_BEFORE_REST;
+        maxStruggles = random.nextInt(10 - 4) + 4;
         struggleCounter = 0;
-        maxFishSpeed = random.nextInt(MIN_MAX_FISH_SPEED, MAX_MAX_FISH_SPEED);
-        dx = random.nextInt(1, 5);
-        amplitude = random.nextInt(MIN_AMPLITUDE, MAX_AMPLITUDE);
+        maxFishSpeed = random.nextInt(MAX_MAX_FISH_SPEED-MIN_MAX_FISH_SPEED)+MIN_MAX_FISH_SPEED;
+        dx = random.nextInt(5 - 1) + 1;
+        amplitude = random.nextInt(MAX_AMPLITUDE-MIN_AMPLITUDE)+MIN_AMPLITUDE;
         fishingLineFloat = new Sprite(x, y, w, h);
         isGameOver = false;
         tension = 0;
@@ -124,7 +123,7 @@ public class FishingLine extends Sprite {
 
         if (restCounter == 0) {
             dx = (dx < 0) ? -maxFishSpeed : maxFishSpeed;
-            strugglesBeforeRest = random.nextInt(MIN_STRUGGLES_BEFORE_REST, MAX_STRUGGLES_BEFORE_REST);
+            strugglesBeforeRest = random.nextInt(MAX_STRUGGLES_BEFORE_REST-MIN_STRUGGLES_BEFORE_REST)+MIN_STRUGGLES_BEFORE_REST;
         }
     }
 

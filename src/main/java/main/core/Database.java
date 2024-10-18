@@ -1,5 +1,10 @@
 package main.core;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -26,11 +31,34 @@ public class Database {
      * @return Connection to the SQLite database
      * @throws SQLException if a database access error occurs
      */
-    public static Connection getConnection() throws SQLException {
-        // Using the path to the database file inside the resources folder
-        String url = "jdbc:sqlite:" + Database.class.getResource(DB_RESOURCE_PATH).getPath();
-        return DriverManager.getConnection(url);
+public static Connection getConnection() throws SQLException {
+    // Extract the database file from the resources (JAR) to a temporary directory
+    File tempDB = new File(System.getProperty("java.io.tmpdir") + File.separator + "game_data.db");
+
+    // If the file does not exist, extract it from the JAR
+    if (!tempDB.exists()) {
+        try (InputStream in = Database.class.getResourceAsStream(DB_RESOURCE_PATH);
+             OutputStream out = new FileOutputStream(tempDB)) {
+
+            if (in == null) {
+                throw new IOException("Database resource not found in JAR: " + DB_RESOURCE_PATH);
+            }
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = in.read(buffer)) > 0) {
+                out.write(buffer, 0, length);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new SQLException("Error extracting database from JAR to temp directory.");
+        }
     }
+
+    // Create the connection to the extracted database file
+    String url = "jdbc:sqlite:" + tempDB.getAbsolutePath();
+    return DriverManager.getConnection(url);
+}
 
     /**
      * Retrieves all fish from the database that are associated with a specific habitat.

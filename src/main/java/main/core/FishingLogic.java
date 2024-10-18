@@ -134,7 +134,7 @@ public class FishingLogic {
             if (fish == null) {
                 while (fish == null) {
                     for (Fish possibleFish : possibleFishes) {
-                        if (random.nextInt(0, 10) < possibleFish.getRarity()) {
+                        if (random.nextInt(10) < possibleFish.getRarity()) {
                             fish = possibleFish;
                             break;
                         }

@@ -37,7 +37,7 @@ import main.GameObjects.Water;
 public class GameLoop extends JPanel implements ActionListener {
     // Constants
     private final int MAXSPEED = 9;
-    private final float TIMESPEED = 0.001f;
+    private final float TIMESPEED = 0.0001f;
 
     // Core components
     private Timer timer;
@@ -79,7 +79,7 @@ public class GameLoop extends JPanel implements ActionListener {
         setBackground(Color.BLACK);
 
         // Core components
-        gameData = new GameData("src/main/resources/levels/house.json");
+        gameData = new GameData("levels/house.json");
         player = new Player(1920 / 2 - 75, 1080 / 2 - 75, gameData.getPlayerWidth(), gameData.getPlayerWidth(), gameData.getPlayer(), MAXSPEED);
         logic = new Logic();
         camera = new Camera(gameData, player);
@@ -403,7 +403,10 @@ public class GameLoop extends JPanel implements ActionListener {
             if (newPath != null) {
                 gameData.loadGameData(newPath);
                 background = new Background(background.getX(), background.getY(), background.getW(), background.getH(), gameData.getBackground());
-                player = new Player(door.getToX(), door.getToY(), gameData.getPlayerWidth(), gameData.getPlayerWidth(), gameData.getPlayer(), MAXSPEED);
+                player.setX(door.getToX());
+                player.setY(door.getToY());
+                player.setW(gameData.getPlayerWidth());
+                player.setH(gameData.getPlayerWidth());
                 water = gameData.getWater();
                 camera.setPlayer(player);
                 currentHabitat = gameData.getHabitat();

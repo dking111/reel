@@ -9,7 +9,7 @@ import java.util.Random;
  * The fish has properties such as weight, rarity, and visibility.
  */
 public class Fish extends AnimatedSprite {
-    private static final String ASSET_PATH = "assets\\fish"; 
+    private static final String ASSET_PATH = "assets/fish"; 
     private static final int DEFAULT_SPEED = 5; 
 
     private Random random; 
@@ -61,13 +61,13 @@ public class Fish extends AnimatedSprite {
      * @param fishingLineY The y-coordinate of the fishing line.
      */
     public void spawn(Water water, int fishingLineX, int fishingLineY) {
-        this.weight = random.nextInt(minWeight, maxWeight);
+        this.weight = random.nextInt(maxWeight-minWeight)+minWeight;
         this.w = 10 + weight;
         this.h = 10 + weight * 2;
         this.fishingLineX = fishingLineX;
         this.fishingLineY = fishingLineY;
-        x = random.nextInt(water.getX(), water.getX() + water.getW());
-        y = random.nextInt(water.getY(), water.getY() + water.getH());
+        x = random.nextInt( water.getX() + water.getW()-water.getX())+water.getX();
+        y = random.nextInt( water.getY() + water.getH()-water.getY())+water.getY();
         isVisible = true;
         angle = getBearing(x + w / 2, y, fishingLineX, fishingLineY);
     }

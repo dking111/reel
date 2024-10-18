@@ -26,7 +26,7 @@
   "playerHeight": 250,
   "playerWidth": 250,
 
-  "player": "assets/player",
+  "player": "/assets/player",
   "background": "assets/background_dock",
   "fish": "assets/fish",
   "habitat": "Lake"
